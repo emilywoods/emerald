@@ -1,3 +1,6 @@
+abs_path = File.expand_path("../lib", File.dirname(__FILE__))
+$LOAD_PATH << abs_path unless $LOAD_PATH.include?(abs_path)
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
