@@ -1,6 +1,7 @@
 require "spec_helper"
 
-require "emerald"
+require "emerald/atom"
+require "emerald/list"
 
 RSpec.describe Emerald::Atom do
 
