@@ -1,0 +1,17 @@
+*.bridgesupport
+*.gem
+*.rbc
+.dat*
+.repl_history
+.rvmrc
+/.bundle/
+/.config
+/.yardoc/
+/spec/examples.txt
+/spec/reports/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+/vendor/bundle
+build/
+spec/examples.txt
