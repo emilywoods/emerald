@@ -1,9 +1,11 @@
 ; This is a comment
 
-(defun print-twice (thing)
-  (print thing)
-  (print thing))
+(defun puts-twice (thing)
+  (puts thing)
+  (puts thing))
 
+; This is the AST of this program
+;
 ; list
 ;   atom defun
 ;   atom print-twice
@@ -15,3 +17,11 @@
 ;   list
 ;     atom print
 ;     atom thing
+
+;
+; It would compile to this Ruby code
+;
+; def print_twice(thing)
+;   puts(thing)
+;   puts(thing)
+; end
