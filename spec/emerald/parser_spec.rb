@@ -16,10 +16,17 @@ RSpec.describe Emerald::Parser do
     end
 
     it "parses two atoms" do
-      source = "hello      world"
+      source = "hello      World"
       ast = Emerald::Parser.new(source).parse
       expect(ast).to eq([Emerald::Atom.new("hello"),
-                         Emerald::Atom.new("world")])
+                         Emerald::Atom.new("World")])
+    end
+
+    it "parses two atoms: a string and an integer" do
+      source = "hey 65"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Atom.new("hey"),
+                        Emerald::Atom.new("65")])
     end
   end
 end

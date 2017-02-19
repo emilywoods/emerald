@@ -23,7 +23,9 @@ module Emerald
       when " "
         parse_whitespace(source)
       when /[a-zA-Z\-]/
-        parse_atom(source)
+        parse_atom(source,first_char)
+      when /\d+/
+        parse_atom(source, first_char)
       end
     end
 
@@ -34,8 +36,13 @@ module Emerald
       [nil, rest_of_source]
     end
 
-    def parse_atom(source)
-      pattern = /\A[a-z\-]+/
+    def parse_atom(source, non_whitespace_char)
+      case non_whitespace_char
+      when /\A[a-zA-Z\-]+/
+        pattern = /\A[a-zA-Z\-]+/
+      when /\d+/
+        pattern = /\d+/
+      end
       atom_value = pattern.match(source).to_s
       atom = Atom.new(atom_value)
       rest_of_source = drop(source, atom_value.size)
