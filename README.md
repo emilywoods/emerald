@@ -1,6 +1,6 @@
 # Emerald
 
-A Lisp that compiles to Ruby
+A Ruby language with Lisp syntax.
 
 
 ## About
