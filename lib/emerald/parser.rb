@@ -24,7 +24,7 @@ module Emerald
         parse_whitespace(source)
       when /[a-zA-Z\-]/
         parse_atom(source)
-      when /\d+/
+      when /[\d+.?]/
         parse_number(source)
       end
     end
@@ -45,7 +45,7 @@ module Emerald
     end
 
     def parse_number(source)
-      pattern = /\d+/
+      pattern = /[\d]*\.?[\d]+/
       number_value = pattern.match(source).to_s
       number = Number.new(number_value.to_f)
       rest_of_source = drop(source, number_value.size)
