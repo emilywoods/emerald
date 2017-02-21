@@ -23,14 +23,20 @@ RSpec.describe Emerald::Parser do
     end
 
     it "parses atoms with upper and lower case" do
-      source = "Hello WOrld"
+      source = "H3llo World44"
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::Atom.new("Hello"),
-                         Emerald::Atom.new("WOrld")])
+      expect(ast).to eq([Emerald::Atom.new("H3llo"),
+                         Emerald::Atom.new("World44")])
     end
   end
 
   describe "number parsing" do
+    it "parses a single digit integer" do
+      source = "2"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Number.new(2)])
+    end
+
     it "parses one number" do
       source = "25"
       ast = Emerald::Parser.new(source).parse
@@ -46,6 +52,25 @@ RSpec.describe Emerald::Parser do
 
     it "parses a floating point number" do
       source = "5.55"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Number.new(5.55)])
+    end
+
+    it "parses a negative number" do
+      source = "-5.0"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Number.new(-5.0)])
+    end
+
+    it "parses a positive integer" do
+      source = "+5"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Number.new(5)])
+    end
+    
+    
+    it "parses a positive float" do
+      source = "+5.55"
       ast = Emerald::Parser.new(source).parse
       expect(ast).to eq([Emerald::Number.new(5.55)])
     end
@@ -66,6 +91,13 @@ RSpec.describe Emerald::Parser do
                           Emerald::Atom.new("eyes"),
                           Emerald::Number.new(10),
                           Emerald::Atom.new("toes")])
+    end
+
+    it "parses a negative and positive number" do
+      source = "-20 +30"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([ Emerald::Number.new(-20),
+                          Emerald::Number.new(30)])
     end
   end
 end
