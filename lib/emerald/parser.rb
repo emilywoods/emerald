@@ -22,10 +22,12 @@ module Emerald
       case first_char
       when " "
         parse_whitespace(source)
-      when /[a-zA-Z\-]/
+      when /[a-zA-Z]/
         parse_atom(source)
-      when /[\d+.?]/
+      when /[\d]/
         parse_number(source)
+      when /[+-]/
+        parse_number(source) if source.slice(1) != " "
       end
     end
 
@@ -37,7 +39,7 @@ module Emerald
     end
 
     def parse_atom(source)
-      pattern = /\A[a-zA-Z\-]+/
+      pattern = /\A[a-zA-Z\d+\-]+/
       atom_value = pattern.match(source).to_s
       atom = Atom.new(atom_value)
       rest_of_source = drop(source, atom_value.size)
@@ -45,7 +47,7 @@ module Emerald
     end
 
     def parse_number(source)
-      pattern = /[\d]*\.?[\d]+/
+      pattern = /[+-]?[\d]*\.?[\d]+/
       number_value = pattern.match(source).to_s
       number = Number.new(number_value.to_f)
       rest_of_source = drop(source, number_value.size)
