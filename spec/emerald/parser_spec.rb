@@ -37,11 +37,17 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([Emerald::Number.new(25)])
     end
 
-    it "parses two numbers" do
+    it "parses two integers" do
       source = "12345 789"
       ast = Emerald::Parser.new(source).parse
       expect(ast).to eq([Emerald::Number.new(12345),
                          Emerald::Number.new(789)])
+    end
+
+    it "parses a floating point number" do
+      source = "5.55"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Number.new(5.55)])
     end
   end
 
@@ -61,6 +67,5 @@ RSpec.describe Emerald::Parser do
                           Emerald::Number.new(10),
                           Emerald::Atom.new("toes")])
     end
-
   end
 end
