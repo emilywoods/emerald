@@ -100,4 +100,30 @@ RSpec.describe Emerald::Parser do
                           Emerald::Number.new(30)])
     end
   end
+
+  describe "string parsing" do
+    it"parses a string ofcharacters" do
+      source = '"Hello"' 
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"Hello"')])
+    end
+    
+    it"parses a string ofcharacters and whitespace" do
+      source = '"Hello this is a string"' 
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"Hello this is a string"')])
+    end
+
+    it "parses a string of characters, whitespace and digits" do
+      source = '"H3llo this is 1 str1ng"' 
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"H3llo this is 1 str1ng"')])
+    end
+
+    it "parses a string of characters, whitespace, digits and symbols" do
+      source = '"H3llo, this is 1 str1ng."' 
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"H3llo, this is 1 str1ng."')])
+    end
+  end
 end
