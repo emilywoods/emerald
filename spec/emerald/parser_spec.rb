@@ -67,8 +67,8 @@ RSpec.describe Emerald::Parser do
       ast = Emerald::Parser.new(source).parse
       expect(ast).to eq([Emerald::Number.new(5)])
     end
-    
-    
+
+
     it "parses a positive float" do
       source = "+5.55"
       ast = Emerald::Parser.new(source).parse
@@ -76,7 +76,82 @@ RSpec.describe Emerald::Parser do
     end
   end
 
-  describe "number and atom parsing" do
+  describe "string parsing" do
+    it"parses a string ofcharacters" do
+      source = '"Hello"'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"Hello"')])
+    end
+
+    it"parses a string ofcharacters and whitespace" do
+      source = '"Hello this is a string"'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"Hello this is a string"' )])
+    end
+
+    it "parses a string of characters, whitespace and digits" do
+      source = '"H3llo this is 1 str1ng"'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"H3llo this is 1 str1ng"')])
+    end
+
+    it "parses a string of characters, whitespace, digits and symbols" do
+      source = '"H3llo, this is 1 str1ng."'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"H3llo, this is 1 str1ng."')])
+    end
+
+    it "parses unusual strings that contain a backslash immediately followed by a quotation mark" do
+      source = '"this is a weird string -> \" <- "'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"this is a weird string -> \" <- "')])
+    end
+
+    it "parses a string with a set of quotation marks are immediately after a backslash" do
+      source = '"Say \"hello\""'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"Say \"hello\""')])
+    end
+
+    it "parses a string over two lines" do
+      source = '"This is a multiline \n  string"'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"This is a multiline \n  string"')])
+    end
+
+    it "parses a multiline string" do
+      source = '"This is another
+      string across
+      three lines"'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"This is another
+      string across
+      three lines"')])
+    end
+
+    it "parses two separate strings" do
+      source = '"This is one string""This is another string"'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"This is one string"'),
+                         Emerald::String.new('"This is another string"')])
+    end
+  end
+
+  describe "number, atom and string parsing" do
+    it "parses a string and a number" do
+      source = '"This is one string" -20'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"This is one string"'),
+                         Emerald::Number.new(-20)])
+    end
+
+    it "parses a string and a atom" do
+      source = '"This is one string" hello'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::String.new('"This is one string"'),
+                         Emerald::Atom.new('hello')])
+    end
+  
     it "parses one number and one atom" do
       source = "11 hey"
       ast = Emerald::Parser.new(source).parse
@@ -99,31 +174,13 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([ Emerald::Number.new(-20),
                           Emerald::Number.new(30)])
     end
-  end
 
-  describe "string parsing" do
-    it"parses a string ofcharacters" do
-      source = '"Hello"' 
+    it "parses a snumber, atom and string" do
+      source = ' 456 "Look at this!" what'
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::String.new('"Hello"')])
-    end
-    
-    it"parses a string ofcharacters and whitespace" do
-      source = '"Hello this is a string"' 
-      ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::String.new('"Hello this is a string"')])
-    end
-
-    it "parses a string of characters, whitespace and digits" do
-      source = '"H3llo this is 1 str1ng"' 
-      ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::String.new('"H3llo this is 1 str1ng"')])
-    end
-
-    it "parses a string of characters, whitespace, digits and symbols" do
-      source = '"H3llo, this is 1 str1ng."' 
-      ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::String.new('"H3llo, this is 1 str1ng."')])
-    end
+      expect(ast).to eq([ Emerald::Number.new(456),
+                          Emerald::String.new('"Look at this!"'),
+                          Emerald::Atom.new('what')])
+     end
   end
 end
