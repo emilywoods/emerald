@@ -28,7 +28,7 @@ module Emerald
         parse_number(source)
       when /[+-]/
         parse_number(source) if source.slice(1) != " "
-      when /\"/
+      when /"/
         parse_string(source)
       end
     end
@@ -57,7 +57,7 @@ module Emerald
     end
 
     def parse_string(source)
-      pattern = /"[\s\S]*"/
+      pattern = /"([^"\\]|\\.)*"/
       string_range = pattern.match(source).to_s
       string = String.new(string_range)
       rest_of_source = drop(source, string_range.size)
