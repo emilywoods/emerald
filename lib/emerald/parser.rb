@@ -6,17 +6,27 @@ module Emerald
 
     def parse
       ast = []
-      result = parse_node(@source)
-      while result
-        node, source = result
-        ast.push(node) if node
-        result = parse_node(source)
-      end
-      ast
+      parse_lists_and_nodes(@source, ast)
     end
 
     private
 
+    def parse_lists_and_nodes(source, ast)
+      result = parse_node(source)
+      while result
+        node, source = result
+        if node.is_a? List
+          child = parse_lists_and_nodes(source,[])
+          ast.push(List.new(*child))
+          break
+        else 
+          ast.push(node) if node
+        end
+        result = parse_node(source)
+      end
+      ast
+    end
+    
     def parse_node(source)
       first_char = source.slice(0)
       case first_char
@@ -27,9 +37,15 @@ module Emerald
       when /[\d]/
         parse_number(source)
       when /[+-]/
-        parse_number(source) if source.slice(1) != " "
+        if source.slice(1) == " "
+          parse_atom(source)
+        else 
+          parse_number(source) 
+        end
       when /"/
         parse_string(source)
+      when /[(]/
+        parse_list(source)
       end
     end
 
@@ -62,6 +78,13 @@ module Emerald
       string = String.new(string_range)
       rest_of_source = drop(source, string_range.size)
       [string, rest_of_source]
+    end
+  
+    def parse_list(source)
+      pattern = /([\s\S]+)/
+      list_range = pattern.match(source).to_s
+      list = List.new()
+      [list, list_range[1..(source.size)]]
     end
 
     def drop(source, count)

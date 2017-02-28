@@ -137,6 +137,35 @@ RSpec.describe Emerald::Parser do
     end
   end
 
+  describe "list parsing" do
+    it "parses a list do" do
+      source = '()'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new()])    
+    end
+    
+    it "parses a list of atoms" do
+      source ='(3 2)'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new( Emerald::Number.new(3), Emerald::Number.new(2))])
+    end
+
+    it "parses a list within a list" do
+      source = '(3 2 (hello))'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new( Emerald::Number.new(3), Emerald::Number.new(2), 
+                                           Emerald::List.new( Emerald::Atom.new('hello') ) ) ] )
+    end
+
+    it "parses lists within lists" do
+      source = '(+ 2 (+ 3 (- 4 ) ) )'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2), 
+                                           Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(3),
+                                                            Emerald::List.new(  Emerald::Atom.new('-'), Emerald::Number.new(4) ) ) ) ] )
+    end
+  end
+
   describe "number, atom and string parsing" do
     it "parses a string and a number" do
       source = '"This is one string" -20'
