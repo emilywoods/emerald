@@ -2,7 +2,7 @@ module Emerald
   class List
     attr_reader :elements
 
-    def initialize(elements)
+    def initialize(*elements)
       @elements = elements
     end
 
