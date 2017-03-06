@@ -1,32 +1,28 @@
 module Emerald
   class Parser
+    INVALID_LIST_ERR = "Error - invalid list"
+
     def initialize(source)
       @source = source
     end
 
     def parse
       ast = []
-      parse_lists_and_nodes(@source, ast)
+      parse_input(@source, ast)
     end
 
     private
 
-    def parse_lists_and_nodes(source, ast)
+    def parse_input(source, ast)
       result = parse_node(source)
       while result
         node, source = result
-        if node.is_a? List
-          child = parse_lists_and_nodes(source,[])
-          ast.push(List.new(*child))
-          break
-        else 
-          ast.push(node) if node
-        end
+        ast.push(node) if node
         result = parse_node(source)
       end
       ast
     end
-    
+
     def parse_node(source)
       first_char = source.slice(0)
       case first_char
@@ -37,14 +33,10 @@ module Emerald
       when /[\d]/
         parse_number(source)
       when /[+-]/
-        if source.slice(1) == " "
-          parse_atom(source)
-        else 
-          parse_number(source) 
-        end
+        source.slice(1) == " " ?  parse_atom(source) : parse_number(source)
       when /"/
         parse_string(source)
-      when /[(]/
+      when /[(]/, /[)]/
         parse_list(source)
       end
     end
@@ -79,12 +71,17 @@ module Emerald
       rest_of_source = drop(source, string_range.size)
       [string, rest_of_source]
     end
-  
+
     def parse_list(source)
-      pattern = /([\s\S]+)/
+      pattern = /\(.*\)/
+      raise INVALID_LIST_ERR unless pattern.match(source)
       list_range = pattern.match(source).to_s
-      list = List.new()
-      [list, list_range[1..(source.size)]]
+      rest_of_source = drop(source, list_range.size)
+      list_contents = list_range[1...(list_range.size - 1)]
+      
+      child = parse_input(list_contents, [])
+      list = List.new(*child)
+      [list, rest_of_source]
     end
 
     def drop(source, count)

@@ -141,9 +141,9 @@ RSpec.describe Emerald::Parser do
     it "parses a list do" do
       source = '()'
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::List.new()])    
+      expect(ast).to eq([Emerald::List.new()])
     end
-    
+
     it "parses a list of atoms" do
       source ='(3 2)'
       ast = Emerald::Parser.new(source).parse
@@ -153,16 +153,48 @@ RSpec.describe Emerald::Parser do
     it "parses a list within a list" do
       source = '(3 2 (hello))'
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::List.new( Emerald::Number.new(3), Emerald::Number.new(2), 
+      expect(ast).to eq([Emerald::List.new( Emerald::Number.new(3), Emerald::Number.new(2),
                                            Emerald::List.new( Emerald::Atom.new('hello') ) ) ] )
     end
 
     it "parses lists within lists" do
       source = '(+ 2 (+ 3 (- 4 ) ) )'
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2), 
+      expect(ast).to eq([Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2),
                                            Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(3),
                                                             Emerald::List.new(  Emerald::Atom.new('-'), Emerald::Number.new(4) ) ) ) ] )
+    end
+
+    it "parses a list which contains a list and a number to the right of the internal list" do
+      source = '(+ (- 0 1) 2)'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new( Emerald::Atom.new('+'),
+                                           Emerald::List.new( Emerald::Atom.new('-'), Emerald::Number.new(0), Emerald::Number.new(1) ),
+                                                             Emerald::Number.new(2) ) ] )
+    end
+
+    it "parses nested lists with numbers to the left of the lists" do
+      source = '(+ 2 (+ 3 ) 3 4)'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2),
+                                           Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(3) ),
+                                           Emerald::Number.new(3), Emerald::Number.new(4) ) ] )
+    end
+
+    it "raises an error for invalid lists with incorrect number of closing brackets" do
+      source = '(+ 2 (+ 3 5)'
+      expect{ ( Emerald::Parser.new(source).parse ) }.to raise_error.with_message("Error - invalid list")
+    end
+
+    it "raises an error for invalid lists with incorrect number of opening brackets" do
+      source = '(+ 2 - 3 5) 2)'
+      expect{ ( Emerald::Parser.new(source).parse ) }.to raise_error.with_message("Error - invalid list")
+    end
+
+    it "parses a paretheses within a string" do
+      source = '(print "(this")'
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::List.new( Emerald::Atom.new('print'), Emerald::String.new('"(this"') ) ] )
     end
   end
 
@@ -180,7 +212,7 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([Emerald::String.new('"This is one string"'),
                          Emerald::Atom.new('hello')])
     end
-  
+
     it "parses one number and one atom" do
       source = "11 hey"
       ast = Emerald::Parser.new(source).parse
