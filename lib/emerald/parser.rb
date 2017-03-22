@@ -1,7 +1,5 @@
 module Emerald
   class Parser
-    INVALID_LIST_ERR = "Error - invalid list"
-
     def initialize(source)
       @source = source
     end
@@ -12,7 +10,6 @@ module Emerald
     end
 
     private
-
     def parse_input(source, ast)
       result = parse_node(source)
       while result
@@ -74,7 +71,7 @@ module Emerald
 
     def parse_list(source)
       pattern = /\(.*\)/
-      raise INVALID_LIST_ERR unless pattern.match(source)
+      raise InvalidListError unless pattern.match(source)
       list_range = pattern.match(source).to_s
       rest_of_source = drop(source, list_range.size)
       list_contents = list_range[1...(list_range.size - 1)]
@@ -88,5 +85,9 @@ module Emerald
       range = count..(source.size)
       source.slice(range)
     end
+
+    class InvalidListError < StandardError
+    end
   end
 end
+
