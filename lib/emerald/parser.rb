@@ -1,4 +1,9 @@
 module Emerald
+  require_relative 'atom'
+  require_relative 'number'
+  require_relative 'list'
+  require_relative 'string'
+
   class Parser
     def initialize(source)
       @source = source
@@ -75,7 +80,7 @@ module Emerald
       list_range = pattern.match(source).to_s
       rest_of_source = drop(source, list_range.size)
       list_contents = list_range[1...(list_range.size - 1)]
-      
+
       child = parse_input(list_contents, [])
       list = List.new(*child)
       [list, rest_of_source]
@@ -90,4 +95,3 @@ module Emerald
     end
   end
 end
-
