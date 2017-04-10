@@ -8,7 +8,7 @@
  ; compiles to: 2 * 5
 
  (/ 8 4)
- ; compiles to: 8 /4
+ ; compiles to: 8 / 4
 
  (% 5 2)
  ; compiles to: 5 % 2

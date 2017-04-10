@@ -1,9 +1,9 @@
-module Emerald
-  require_relative 'atom'
-  require_relative 'number'
-  require_relative 'list'
-  require_relative 'string'
+require_relative 'atom'
+require_relative 'number'
+require_relative 'list'
+require_relative 'string'
 
+module Emerald
   class Parser
     def initialize(source)
       @source = source
