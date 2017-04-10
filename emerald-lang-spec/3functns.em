@@ -1,14 +1,28 @@
-(defun hello                                                ;define function
-  []                                                        ;no args
-    (print "Hello World"))                                  ;print
+(defn hello
+  []
+    (print "Hello World"))
 
-(defun add-this
+;compiles to:
+;def hello
+;  print "Hello World"
+;end
+
+
+(defn add-this
        [a b]
        (+ a b))
-(defun
-  [& arg]                                                   ;& - unknown number of args
-  print (first arg))                                        ;print first arg
 
-(defmeth
-  [&])
-  )
+;compiles to:
+;def add-this (a, b)
+;  a + b
+;end
+
+
+(defn print-first
+  [& arguments]
+  (print (first arguments)))
+
+;compiles to:
+;def print-first(*arguments)
+;  print arguments.first
+;end
