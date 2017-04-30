@@ -42,7 +42,6 @@ module Emerald
       atom_args = source.slice(1..source.size)
       case atom_functn
       when "num_ops"
-        puts numeric_operation(first_node,atom_args)
         [numeric_operation(first_node, atom_args),[]]
       when "logical_ops"
         logical_operation(first_node, atom_args)
