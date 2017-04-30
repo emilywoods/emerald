@@ -59,6 +59,11 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq('1.0 + 2.0')
     end
 
+    it "generates addition operations from addition functions within a list when the arguments are identical" do
+      compiled_code = Emerald::Rubify.new( [ Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2.0), Emerald::Number.new(2.0) ) ] ).rubify
+      expect(compiled_code).to eq('2.0 + 2.0')
+    end
+
     it "generates addition operations from addtion functions within a list with several arguments" do
       compiled_code = Emerald::Rubify.new( [ Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(1.0), Emerald::Number.new(2.0), Emerald::Number.new(9),  Emerald::Number.new(0.5) ) ]  ).rubify
       expect(compiled_code).to eq('1.0 + 2.0 + 9 + 0.5')

@@ -1,0 +1,2 @@
+class InvalidFileTypeError < StandardError
+end
