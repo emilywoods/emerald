@@ -42,6 +42,7 @@ module Emerald
       atom_args = source.slice(1..source.size)
       case atom_functn
       when "num_ops"
+        puts numeric_operation(first_node,atom_args)
         [numeric_operation(first_node, atom_args),[]]
       when "logical_ops"
         logical_operation(first_node, atom_args)
@@ -82,7 +83,7 @@ module Emerald
     end
 
     def numeric_operation(operator, arguments) 
-      arguments.map {|element| "#{element.number} " + (element == arguments.last ? "":"#{operator} ")}.join()
+      arguments.map.with_index {|element, index| "#{element.number} " + (arguments[index + 1].nil? ? "":"#{operator} ")}.join()
     end
     
     def logical_operation(operator,arguments)
