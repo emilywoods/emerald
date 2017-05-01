@@ -1,8 +1,7 @@
 module Emerald
   class UserCommsHelper
 
-    ERROR_INCORRECT_FILE_TYPE = "Error: Incorrect file type received \n
-                                 Expecting a lisp file e.g. example.lisp \n"
+    ERROR_INCORRECT_FILE_TYPE = "Error: Incorrect file type received.\nExpecting a lisp file e.g. example.lisp\n"
     ERROR_INITIALISE_WITH_STRING_IO = "Initialise with StringIO objects"
 
     def initialize(stdout)
