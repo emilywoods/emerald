@@ -1,5 +1,5 @@
 require "spec_helper"
-require "emerald/rubify"
+require "rubify"
 require "emerald/atom"
 require "emerald/string"
 require "emerald/number"
