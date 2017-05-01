@@ -24,4 +24,12 @@ RSpec.describe Emerald::UserCommsHelper do
       expect(user_comms.get_arguments).to eq(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
     end
   end
+
+  describe "output_to_console" do
+    it "outputs arguments to the console" do
+      to_output = "it will return this"
+      user_comms.output_to_console(to_output)
+      expect(stdout).to have_received(:puts).with(to_output)
+    end
+  end
 end
