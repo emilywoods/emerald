@@ -9,9 +9,9 @@ module Emerald
       raise ERROR_INITIALISE_WITH_STRING_IO if @stdout.nil?
     end
 
-    def get_arguments
+    def verify_lisp_file(input_file)
       pattern = /[a-zA-Z0-9\-_]+.lisp/
-      pattern.match(ARGV[0]) ? ARGV[0]: @stdout.puts(ERROR_INCORRECT_FILE_TYPE + ARGV[0])
+      pattern.match(input_file) ? input_file: @stdout.puts(ERROR_INCORRECT_FILE_TYPE)
     end
 
     def output_to_console(to_output)

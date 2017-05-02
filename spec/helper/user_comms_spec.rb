@@ -15,13 +15,13 @@ RSpec.describe Emerald::UserCommsHelper do
   describe "get_arguments" do
     it "returns input arguments when they match the lisp file format" do
       ARGV[0] = "this.lisp"
-      expect(user_comms.get_arguments).to eq("this.lisp")
+      expect(user_comms.verify_lisp_file).to eq("this.lisp")
     end
 
     it "returns an error message when input arguments do not match lisp file format" do
       ARGV[0] = "this.rb"
       allow(stdout).to receive(:puts).and_return(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
-      expect(user_comms.get_arguments).to eq(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
+      expect(user_comms.verify_lisp_file).to eq(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
     end
   end
 
