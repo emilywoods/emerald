@@ -1,9 +1,9 @@
 require "spec_helper"
-require "rubify"
-require "emerald/atom"
-require "emerald/string"
-require "emerald/number"
-require "emerald/list"
+require_relative "../../lib/emerald/rubify"
+require_relative "../../lib/emerald/atom"
+require_relative "../../lib/emerald/string"
+require_relative "../../lib/emerald/number"
+require_relative "../../lib/emerald/list"
 
 RSpec.describe Emerald::Rubify do
 
