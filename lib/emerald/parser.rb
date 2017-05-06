@@ -39,6 +39,8 @@ module Emerald
         parse_number(source)
       when /[+-]/
         source.slice(1) == " " ?  parse_atom(source) : parse_number(source)
+      when /[*\/]/
+        parse_atom(source)
       when /"/
         parse_string(source)
       when /[(]/, /[)]/
@@ -54,7 +56,7 @@ module Emerald
     end
 
     def parse_atom(source)
-      pattern = /\A[a-zA-Z\d+\-]+/
+      pattern = /\A[a-zA-Z\d+\-*\/]+/
       atom_value = pattern.match(source).to_s
       atom = Atom.new(atom_value)
       rest_of_source = drop(source, atom_value.size)

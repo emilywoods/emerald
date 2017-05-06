@@ -7,11 +7,11 @@ module Emerald
 
     def rubify
       ruby_code = ''
-      rubify_in(@source, ruby_code)
+      rubify_input(@source, ruby_code)
     end
 
     private
-    def rubify_in(source, ruby_code)
+    def rubify_input(source, ruby_code)
       result = serialise_node(source) 
       while result
         node, source = result
@@ -22,7 +22,7 @@ module Emerald
     end
 
     def serialise_node(source)
-      first_node = source.first 
+      first_node = source.first
       case first_node
       when Atom
         serialise_atom_as_symbol(source)
@@ -81,7 +81,7 @@ module Emerald
       atom_types.map{ |k,v| v if k.match(node) }.compact
     end
 
-    def numeric_operation(operator, arguments) 
+    def numeric_operation(operator, arguments)
       arguments.map.with_index {|element, index| "#{element.number} " + (arguments[index + 1].nil? ? "":"#{operator} ")}.join()
     end
     

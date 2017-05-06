@@ -94,6 +94,36 @@ RSpec.describe 'Emerald' do
       end
     end
 
+    context "when it receives a valid lisp expression with a subtraction operation" do
+      it "compiles and evaluates the lisp" do
+        test_file.write('(- 5 2 1)')
+        test_file.close
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq('2.0')
+      end
+    end
+
+    context "when it receives a valid lisp expression with a division operation" do
+      it "compiles and evaluates the lisp" do
+        test_file.write('(/ 20 2 2)')
+        test_file.close
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq('5.0')
+      end
+    end
+
+    context "when it receives a valid lisp expression with a multiplication operation" do
+      it "compiles and evaluates the lisp" do
+        test_file.write('(* 12 2 2)')
+        test_file.close
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq('48.0')
+      end
+    end
+
     after(:each) do
       test_file.unlink
     end
