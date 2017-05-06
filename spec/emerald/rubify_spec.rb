@@ -1,9 +1,9 @@
 require "spec_helper"
-require_relative "../../lib/emerald/rubify"
-require_relative "../../lib/emerald/atom"
-require_relative "../../lib/emerald/string"
-require_relative "../../lib/emerald/number"
-require_relative "../../lib/emerald/list"
+require "emerald/rubify"
+require "emerald/atom"
+require "emerald/string"
+require "emerald/number"
+require "emerald/list"
 
 RSpec.describe Emerald::Rubify do
 
@@ -57,11 +57,6 @@ RSpec.describe Emerald::Rubify do
     it "generates addition operations from addition functions within a list" do
       compiled_code = Emerald::Rubify.new( [ Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(1.0), Emerald::Number.new(2.0) ) ] ).rubify
       expect(compiled_code).to eq('1.0 + 2.0')
-    end
-
-    it "generates addition operations from addition functions within a list when the arguments are identical" do
-      compiled_code = Emerald::Rubify.new( [ Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2.0), Emerald::Number.new(2.0) ) ] ).rubify
-      expect(compiled_code).to eq('2.0 + 2.0')
     end
 
     it "generates addition operations from addtion functions within a list with several arguments" do
@@ -132,7 +127,7 @@ RSpec.describe Emerald::Rubify do
     end
 
     it "raises an InvalidFunctionError when a list does not have a function call" do
-      expect{ Emerald::Rubify.new( [ Emerald::List.new( Emerald::String.new('"bumblebee"') ) ] ).rubify }.to raise_error(Emerald::Rubify::InvalidFunctionError)
+      expect{ Emerald::Rubify.new( [ Emerald::List.new( Emerald::String.new('"bumblebee"') ) ] ).rubify }.to raise_error(Emerald::Rubify::InvalidLispFunctionError)
     end
   end
 end
