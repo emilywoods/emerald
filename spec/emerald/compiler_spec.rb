@@ -4,7 +4,7 @@ require_relative '../../lib/emerald/compiler'
 RSpec.describe 'Compiler' do
 
     context "when the compiler receives a lisp input" do
-      it "it parses the lisp and then returns a ruby string" do
+      it "parses the lisp and then returns a ruby string" do
         lisp_file_contents = '(+ 2 2)'
         compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
         expect(compiled_lisp).to eq('2.0 + 2.0')
@@ -12,7 +12,7 @@ RSpec.describe 'Compiler' do
     end
 
     context "when the contents of the file are empty" do
-      it "it parses the lisp and then returns an empty string" do
+      it "parses the lisp and then returns an empty string" do
         lisp_file_contents = ''
         compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
         expect(compiled_lisp).to eq('')

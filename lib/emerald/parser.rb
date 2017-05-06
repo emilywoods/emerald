@@ -5,6 +5,9 @@ require_relative 'string'
 
 module Emerald
   class Parser
+
+    ERROR_INVALID_LIST = 'Oh no! A list has been received without matching brackets'
+
     def initialize(source)
       @source = source
     end
@@ -36,6 +39,8 @@ module Emerald
         parse_number(source)
       when /[+-]/
         source.slice(1) == " " ?  parse_atom(source) : parse_number(source)
+      when /[*\/]/
+        parse_atom(source)
       when /"/
         parse_string(source)
       when /[(]/, /[)]/
@@ -51,7 +56,7 @@ module Emerald
     end
 
     def parse_atom(source)
-      pattern = /\A[a-zA-Z\d+\-]+/
+      pattern = /\A[a-zA-Z\d+\-*\/]+/
       atom_value = pattern.match(source).to_s
       atom = Atom.new(atom_value)
       rest_of_source = drop(source, atom_value.size)
@@ -76,7 +81,7 @@ module Emerald
 
     def parse_list(source)
       pattern = /\(.*\)/
-      raise InvalidListError unless pattern.match(source)
+      raise InvalidListError, ERROR_INVALID_LIST unless pattern.match(source)
       list_range = pattern.match(source).to_s
       rest_of_source = drop(source, list_range.size)
       list_contents = list_range[1...(list_range.size - 1)]

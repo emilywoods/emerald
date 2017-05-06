@@ -7,11 +7,11 @@ module Emerald
 
     def rubify
       ruby_code = ''
-      rubify_in(@source, ruby_code)
+      rubify_input(@source, ruby_code)
     end
 
     private
-    def rubify_in(source, ruby_code)
+    def rubify_input(source, ruby_code)
       result = serialise_node(source) 
       while result
         node, source = result
@@ -22,7 +22,7 @@ module Emerald
     end
 
     def serialise_node(source)
-      first_node = source.first 
+      first_node = source.first
       case first_node
       when Atom
         serialise_atom_as_symbol(source)
@@ -32,7 +32,7 @@ module Emerald
         serialise_string(source)
       when List
         return if first_node.elements.empty?
-        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidFunctionError)
+        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
       end
     end
 
@@ -81,7 +81,7 @@ module Emerald
       atom_types.map{ |k,v| v if k.match(node) }.compact
     end
 
-    def numeric_operation(operator, arguments) 
+    def numeric_operation(operator, arguments)
       arguments.map.with_index {|element, index| "#{element.number} " + (arguments[index + 1].nil? ? "":"#{operator} ")}.join()
     end
     
@@ -90,7 +90,7 @@ module Emerald
       ["#{arg.first}.#{operator}", arg.slice(1..arg.size)]
     end
 
-    class InvalidFunctionError < StandardError
+    class InvalidLispFunctionError < StandardError
     end
   end
 end
