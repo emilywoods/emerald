@@ -132,7 +132,7 @@ RSpec.describe Emerald::Rubify do
     end
 
     it "raises an InvalidFunctionError when a list does not have a function call" do
-      expect{ Emerald::Rubify.new( [ Emerald::List.new( Emerald::String.new('"bumblebee"') ) ] ).rubify }.to raise_error(Emerald::Rubify::InvalidFunctionError)
+      expect{ Emerald::Rubify.new( [ Emerald::List.new( Emerald::String.new('"bumblebee"') ) ] ).rubify }.to raise_error(Emerald::Rubify::InvalidLispFunctionError)
     end
   end
 end

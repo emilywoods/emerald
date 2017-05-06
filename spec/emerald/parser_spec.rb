@@ -183,12 +183,12 @@ RSpec.describe Emerald::Parser do
 
     it "raises an error for invalid lists with incorrect number of closing brackets" do
       source = '(+ 2 (+ 3 5)'
-      expect{ ( Emerald::Parser.new(source).parse ) }.to raise_error(Emerald::Parser::InvalidListError)   
+      expect{ ( Emerald::Parser.new(source).parse ) }.to raise_error(Emerald::Parser::InvalidListError).with_message(Emerald::Parser::ERROR_INVALID_LIST)
     end
 
     it "raises an error for invalid lists with incorrect number of opening brackets" do
       source = '(+ 2 - 3 5) 2)'
-      expect{ ( Emerald::Parser.new(source).parse ) }.to raise_error(Emerald::Parser::InvalidListError)
+      expect{ ( Emerald::Parser.new(source).parse ) }.to raise_error(Emerald::Parser::InvalidListError).with_message(Emerald::Parser::ERROR_INVALID_LIST)
     end
 
     it "parses a paretheses within a string" do

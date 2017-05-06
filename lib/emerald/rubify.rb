@@ -32,7 +32,7 @@ module Emerald
         serialise_string(source)
       when List
         return if first_node.elements.empty?
-        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidFunctionError)
+        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
       end
     end
 
@@ -90,7 +90,7 @@ module Emerald
       ["#{arg.first}.#{operator}", arg.slice(1..arg.size)]
     end
 
-    class InvalidFunctionError < StandardError
+    class InvalidLispFunctionError < StandardError
     end
   end
 end

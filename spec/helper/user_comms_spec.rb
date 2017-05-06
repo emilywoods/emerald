@@ -20,8 +20,7 @@ RSpec.describe Emerald::UserCommsHelper do
 
     it "returns an error message when input arguments do not match lisp file format" do
       input_file = "this.rb"
-      allow(stdout).to receive(:puts).and_return(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
-      expect(user_comms.verify_lisp_file(input_file)).to eq(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
+      expect{ user_comms.verify_lisp_file(input_file) }.to raise_error(Emerald::UserCommsHelper::InvalidFileTypeError).with_message(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
     end
   end
 
