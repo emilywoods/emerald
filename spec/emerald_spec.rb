@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'tempfile'
-require_relative '../lib/helper/user_comms'
+require 'helper/user_comms'
 include Emerald
 require 'emerald/parser'
 require 'emerald/compiler'
@@ -14,15 +14,13 @@ RSpec.describe 'Emerald' do
   describe "given a non-lisp file is passed in" do
     context "when non-lisp file is passed" do
       it "returns an InvalidFileType error" do
-        verify_lisp = Proc.new { user_comms.verify_lisp_file('test-file.rb') }
-        expect(verify_lisp).to raise_error(Emerald::UserCommsHelper::InvalidFileTypeError).with_message(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
+        expect{ user_comms.verify_lisp_file('test-file.rb') }.to raise_error(Emerald::UserCommsHelper::InvalidFileTypeError).with_message(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
       end
     end
 
     context "when no file is passed" do
       it "returns an InvalidFileType error" do
-        verify_lisp = Proc.new { user_comms.verify_lisp_file('') }
-        expect(verify_lisp).to raise_error(Emerald::UserCommsHelper::InvalidFileTypeError).with_message(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
+        expect{ user_comms.verify_lisp_file('') }.to raise_error(Emerald::UserCommsHelper::InvalidFileTypeError).with_message(Emerald::UserCommsHelper::ERROR_INCORRECT_FILE_TYPE)
       end
     end
   end

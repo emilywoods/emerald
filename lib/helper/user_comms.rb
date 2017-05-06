@@ -5,8 +5,8 @@ module Emerald
     ERROR_INITIALISE_WITH_STRING_IO = "Error: Initialize with StringIO objects"
 
     def initialize(stdout)
+      raise ERROR_INITIALISE_WITH_STRING_IO if stdout.nil?
       @stdout = stdout if stdout.respond_to?(:puts)
-      raise ERROR_INITIALISE_WITH_STRING_IO if @stdout.nil?
     end
 
     def verify_lisp_file(input_file)
