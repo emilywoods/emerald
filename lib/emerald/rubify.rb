@@ -82,7 +82,9 @@ module Emerald
     end
 
     def numeric_operation(operator, arguments)
-      arguments.map.with_index {|element, index| "#{element.number} " + (arguments[index + 1].nil? ? "":"#{operator} ")}.join()
+      arguments.map.with_index { |element, index|
+        "#{element.number} " + (arguments[index + 1].nil? ? "":"#{operator} ")
+      }.join()
     end
     
     def logical_operation(operator,arguments)

@@ -3,7 +3,6 @@ require 'tempfile'
 require 'emerald/user_comms_helper'
 require 'emerald/parser'
 require 'emerald/compiler'
-include Emerald
 
 RSpec.describe 'Emerald' do
 
