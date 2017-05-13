@@ -1,4 +1,4 @@
-require_relative 'helper/user_comms'
+require_relative 'emerald/user_comms_helper'
 require_relative 'emerald/compiler'
 
 module Emerald
@@ -7,7 +7,7 @@ module Emerald
 
   user_comms = UserCommsHelper.new(STDOUT)
 
-  input_file = user_comms.verify_lisp_file(ARGV[0])
+  input_file = user_comms.verify_input(ARGV[0])
   lisp_file_contents = File.read(input_file)
 
   compiler = Emerald::Compiler.new(lisp_file_contents)
