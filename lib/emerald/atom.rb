@@ -7,7 +7,7 @@ module Emerald
     end
 
     def ==(other)
-      other.is_a?(Atom) and value == other.value
+      other.is_a?(Atom) && value == other.value
     end
   end
 end

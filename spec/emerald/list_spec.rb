@@ -4,7 +4,6 @@ require "emerald/atom"
 require "emerald/list"
 
 RSpec.describe Emerald::List do
-
   describe "#==" do
     it "can be equal" do
       list1 = Emerald::List.new([])

@@ -7,7 +7,7 @@ module Emerald
     end
 
     def ==(other)
-      other.is_a?(String) and string == other.string
+      other.is_a?(String) && string == other.string
     end
   end
 end

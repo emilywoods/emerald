@@ -7,7 +7,7 @@ module Emerald
     end
 
     def ==(other)
-      other.is_a?(Number) and number == other.number
+      other.is_a?(Number) && number == other.number
     end
   end
 end

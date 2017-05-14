@@ -1,12 +1,12 @@
-require_relative 'atom'
-require_relative 'number'
-require_relative 'list'
-require_relative 'string'
+require_relative "atom"
+require_relative "number"
+require_relative "list"
+require_relative "string"
 
 module Emerald
   class Parser
-
-    ERROR_INVALID_LIST = 'Oh no! A list has been received without matching brackets'
+    ERROR_INVALID_LIST = "Oh no! A list has been received without\
+ matching brackets".freeze
 
     def initialize(source)
       @source = source
@@ -18,6 +18,7 @@ module Emerald
     end
 
     private
+
     def parse_input(source, ast)
       result = parse_node(source)
       while result
@@ -38,7 +39,7 @@ module Emerald
       when /[\d]/
         parse_number(source)
       when /[+-]/
-        source.slice(1) == " " ?  parse_atom(source) : parse_number(source)
+        source.slice(1) == " " ? parse_atom(source) : parse_number(source)
       when /[*\/]/
         parse_atom(source)
       when /"/
