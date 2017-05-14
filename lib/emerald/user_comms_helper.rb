@@ -7,7 +7,7 @@ without special characters".freeze
 StringIO objects".freeze
 
     def initialize(stdout)
-      @stdout = stdout if stdout.respond_to?(:puts)
+      @stdout = stdout
       raise InvalidArgumentError, ERROR_INITIALISE_STRING_IO if @stdout.nil?
     end
 
