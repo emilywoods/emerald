@@ -1,6 +1,5 @@
 module Emerald
   class UserCommsHelper
-
     ERROR_INVALID_FILE = "Oops! The compiler requires an alphanumeric file \
 without special characters".freeze
     ERROR_INITIALISE_STRING_IO = "Error: Initialize with \
@@ -25,6 +24,5 @@ StringIO objects".freeze
 
     class InvalidArgumentError < StandardError
     end
-
   end
 end

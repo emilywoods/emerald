@@ -1,9 +1,8 @@
-require_relative 'parser'
-require_relative 'rubify'
+require_relative "parser"
+require_relative "rubify"
 
 module Emerald
   class Compiler
-
     attr_reader :lisp_file_contents
 
     def initialize(lisp_file_contents)

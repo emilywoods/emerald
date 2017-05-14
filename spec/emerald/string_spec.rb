@@ -4,7 +4,7 @@ require "emerald/string"
 require "emerald/atom"
 
 RSpec.describe Emerald::String do
-  describe "#==" do
+  describe '#==' do
     it "can be equal" do
       string1 = Emerald::String.new('"This string"')
       string2 = Emerald::String.new('"This string"')

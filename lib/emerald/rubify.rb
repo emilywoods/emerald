@@ -1,18 +1,18 @@
 module Emerald
-
   class Rubify
     def initialize(source)
       @source = source
     end
 
     def rubify
-      ruby_code = ''
+      ruby_code = ""
       rubify_input(@source, ruby_code)
     end
 
     private
+
     def rubify_input(source, ruby_code)
-      result = serialise_node(source) 
+      result = serialise_node(source)
       while result
         node, source = result
         ruby_code.concat(node + "\n") if node
@@ -31,8 +31,9 @@ module Emerald
       when String
         serialise_string(source)
       when List
-        return if first_node.elements.empty?
-        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
+        list_elements = first_node.elements
+        return if list_elements.empty?
+        list_elements.first.is_a?(Atom) ? serialise_atom(list_elements) : (raise InvalidLispFunctionError)
       end
     end
 
@@ -42,11 +43,11 @@ module Emerald
       atom_args = source.slice(1..source.size)
       case atom_functn
       when "num_ops"
-        [numeric_operation(first_node, atom_args),[]]
+        [numeric_operation(first_node, atom_args), []]
       when "logical_ops"
         logical_operation(first_node, atom_args)
       when "symbol"
-        [':' + first_node, atom_args]
+        [":" + first_node, atom_args]
       end
     end
 
@@ -69,7 +70,7 @@ module Emerald
     def serialise_atom_as_symbol(source)
       first_node = source.first.value
       atom_args = source.slice(1..source.size)
-      [':' + first_node, atom_args]
+      [":" + first_node, atom_args]
     end
 
     def type_of_atom(node)
@@ -78,17 +79,17 @@ module Emerald
         /^[nil|empty?]+$/ => "logical_ops",
         /[\w]/ => "symbol"
       }
-      atom_types.map{ |k,v| v if k.match(node) }.compact
+      atom_types.map { |k, v| v if k.match(node) }.compact
     end
 
     def numeric_operation(operator, arguments)
-      arguments.map.with_index { |element, index|
-        "#{element.number} " + (arguments[index + 1].nil? ? "":"#{operator} ")
-      }.join()
+      arguments.map.with_index do |element, index|
+        "#{element.number} " + (arguments[index + 1].nil? ? "" : "#{operator} ")
+      end.join
     end
-    
-    def logical_operation(operator,arguments)
-      arg =  serialise_node(arguments)
+
+    def logical_operation(operator, arguments)
+      arg = serialise_node(arguments)
       ["#{arg.first}.#{operator}", arg.slice(1..arg.size)]
     end
 
