@@ -5,7 +5,6 @@ require 'emerald/parser'
 require 'emerald/compiler'
 
 RSpec.describe 'Emerald' do
-
   let(:stdout) { spy('STDOUT') }
   let(:user_comms) { Emerald::UserCommsHelper.new(stdout) }
   let(:parser) { Emerald::Parser }

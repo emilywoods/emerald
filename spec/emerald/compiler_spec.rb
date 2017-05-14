@@ -2,7 +2,6 @@ require 'spec_helper'
 require_relative '../../lib/emerald/compiler'
 
 RSpec.describe 'Compiler' do
-
   context 'when the compiler receives a lisp input' do
     it 'parses the lisp and then returns a ruby string' do
       lisp_file_contents = '(+ 2 2)'

@@ -2,7 +2,6 @@ require 'rspec'
 require 'emerald/user_comms_helper'
 
 RSpec.describe Emerald::UserCommsHelper do
-
   describe 'initialize' do
     it 'raises an error if not initialized with stdout' do
       expect { Emerald::UserCommsHelper.new(nil) }.to \
