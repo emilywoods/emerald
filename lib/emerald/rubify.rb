@@ -5,7 +5,7 @@ module Emerald
     end
 
     def rubify
-      ruby_code = ''
+      ruby_code = ""
       rubify_input(@source, ruby_code)
     end
 
@@ -42,12 +42,12 @@ module Emerald
       atom_functn = type_of_atom(first_node).first
       atom_args = source.slice(1..source.size)
       case atom_functn
-      when 'num_ops'
+      when "num_ops"
         [numeric_operation(first_node, atom_args), []]
-      when 'logical_ops'
+      when "logical_ops"
         logical_operation(first_node, atom_args)
-      when 'symbol'
-        [':' + first_node, atom_args]
+      when "symbol"
+        [":" + first_node, atom_args]
       end
     end
 
@@ -70,21 +70,21 @@ module Emerald
     def serialise_atom_as_symbol(source)
       first_node = source.first.value
       atom_args = source.slice(1..source.size)
-      [':' + first_node, atom_args]
+      [":" + first_node, atom_args]
     end
 
     def type_of_atom(node)
       atom_types = {
-        /^[-+*\/<>=]+$/ => 'num_ops',
-        /^[nil|empty?]+$/ => 'logical_ops',
-        /[\w]/ => 'symbol'
+        /^[-+*\/<>=]+$/ => "num_ops",
+        /^[nil|empty?]+$/ => "logical_ops",
+        /[\w]/ => "symbol"
       }
       atom_types.map { |k, v| v if k.match(node) }.compact
     end
 
     def numeric_operation(operator, arguments)
       arguments.map.with_index do |element, index|
-        "#{element.number} " + (arguments[index + 1].nil? ? '' : "#{operator} ")
+        "#{element.number} " + (arguments[index + 1].nil? ? "" : "#{operator} ")
       end.join
     end
 

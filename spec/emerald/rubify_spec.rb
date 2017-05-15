@@ -1,162 +1,162 @@
-require 'spec_helper'
-require 'emerald/rubify'
-require 'emerald/atom'
-require 'emerald/string'
-require 'emerald/number'
-require 'emerald/list'
+require "spec_helper"
+require "emerald/rubify"
+require "emerald/atom"
+require "emerald/string"
+require "emerald/number"
+require "emerald/list"
 
 RSpec.describe Emerald::Rubify do
-  it 'compiles an empty source' do
+  it "compiles an empty source" do
     compiled_code = Emerald::Rubify.new([]).rubify
-    expect(compiled_code).to eq('')
+    expect(compiled_code).to eq("")
   end
 
-  it 'generates code from an empty list' do
+  it "generates code from an empty list" do
     compiled_code = Emerald::Rubify.new([Emerald::List.new]).rubify
-    expect(compiled_code).to eq('')
+    expect(compiled_code).to eq("")
   end
 
-  describe 'code generation from atoms' do
-    it 'generates a symbol from a single atom outside of a list' do
-      compiled_code = Emerald::Rubify.new([Emerald::Atom.new('hello')]).rubify
-      expect(compiled_code).to eq(':hello')
+  describe "code generation from atoms" do
+    it "generates a symbol from a single atom outside of a list" do
+      compiled_code = Emerald::Rubify.new([Emerald::Atom.new("hello")]).rubify
+      expect(compiled_code).to eq(":hello")
     end
 
-    it 'generates symbols on separate lines from two atoms outside a list' do
-      compiled_code = Emerald::Rubify.new([Emerald::Atom.new('hello'),
-                                           Emerald::Atom.new('world')]).rubify
+    it "generates symbols on separate lines from two atoms outside a list" do
+      compiled_code = Emerald::Rubify.new([Emerald::Atom.new("hello"),
+                                           Emerald::Atom.new("world")]).rubify
       expect(compiled_code).to eq(":hello\n:world")
     end
   end
 
-  describe 'code generation from numbers' do
-    it 'generates a number from a single number' do
+  describe "code generation from numbers" do
+    it "generates a number from a single number" do
       compiled_code = Emerald::Rubify.new([Emerald::Number.new(5.0)]).rubify
-      expect(compiled_code).to eq('5.0')
+      expect(compiled_code).to eq("5.0")
     end
 
-    it 'generates two numbers on separate lines from two numbers' do
+    it "generates two numbers on separate lines from two numbers" do
       compiled_code = Emerald::Rubify.new([Emerald::Number.new(1.0),
                                            Emerald::Number.new(3.0)]).rubify
       expect(compiled_code).to eq("1.0\n3.0")
     end
   end
 
-  describe 'code generation from strings' do
-    it 'generates a string from a single string' do
+  describe "code generation from strings" do
+    it "generates a string from a single string" do
       compiled_code = Emerald::Rubify.new(
         [Emerald::String.new('"Hey there"')]
       ).rubify
       expect(compiled_code).to eq('"Hey there"')
     end
 
-    it 'generates two strings on separate lines from two strings' do
+    it "generates two strings on separate lines from two strings" do
       compiled_code = Emerald::Rubify.new([Emerald::String.new('"goat"'),
                                            Emerald::String.new('"duck"')]).rubify
       expect(compiled_code).to eq('"goat"'"\n"'"duck"')
     end
   end
 
-  describe 'numeric operations' do
-    it 'generates addition operations from addition functions within a list' do
+  describe "numeric operations" do
+    it "generates addition operations from addition functions within a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('+'),
+                                              Emerald::Atom.new("+"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 + 2.0')
+      expect(compiled_code).to eq("1.0 + 2.0")
     end
 
-    it 'generates addition operations from addtion functions with several args' do
+    it "generates addition operations from addtion functions with several args" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('+'),
+                                              Emerald::Atom.new("+"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0),
                                               Emerald::Number.new(9),
                                               Emerald::Number.new(0.5)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 + 2.0 + 9 + 0.5')
+      expect(compiled_code).to eq("1.0 + 2.0 + 9 + 0.5")
     end
 
-    it 'generates subtration operations from subtraction functions in a list' do
+    it "generates subtration operations from subtraction functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('-'),
+                                              Emerald::Atom.new("-"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 - 2.0')
+      expect(compiled_code).to eq("1.0 - 2.0")
     end
 
-    it 'generates division operations from division functions in a list' do
+    it "generates division operations from division functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('/'),
+                                              Emerald::Atom.new("/"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 / 2.0')
+      expect(compiled_code).to eq("1.0 / 2.0")
     end
 
-    it 'generates multiplication from multiplication functions in a list' do
+    it "generates multiplication from multiplication functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('*'),
+                                              Emerald::Atom.new("*"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 * 2.0')
+      expect(compiled_code).to eq("1.0 * 2.0")
     end
 
-    it 'generates less than operations from comparision functions in a list' do
+    it "generates less than operations from comparision functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('<'),
+                                              Emerald::Atom.new("<"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 < 2.0')
+      expect(compiled_code).to eq("1.0 < 2.0")
     end
 
-    it 'generates greater than operations from comparison functions in a list' do
+    it "generates greater than operations from comparison functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('>'),
+                                              Emerald::Atom.new(">"),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 > 2.0')
+      expect(compiled_code).to eq("1.0 > 2.0")
     end
 
-    it 'generates less than or equal to operations from comparison functions in a list' do
+    it "generates less than or equal to operations from comparison functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('<='),
+                                              Emerald::Atom.new("<="),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 <= 2.0')
+      expect(compiled_code).to eq("1.0 <= 2.0")
     end
 
-    it 'generates greater than or equal to operations from comparison functions in a list' do
+    it "generates greater than or equal to operations from comparison functions in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('>='),
+                                              Emerald::Atom.new(">="),
                                               Emerald::Number.new(1.0),
                                               Emerald::Number.new(2.0)
                                             )
                                           ]).rubify
-      expect(compiled_code).to eq('1.0 >= 2.0')
+      expect(compiled_code).to eq("1.0 >= 2.0")
     end
 
     # it "generates addition with negative arguments" do
@@ -165,42 +165,42 @@ RSpec.describe Emerald::Rubify do
     # end
   end
 
-  describe 'logical operations' do
-    it 'generates a symbol and a number on separate lines when querying nil outside a list' do
-      compiled_code = Emerald::Rubify.new([Emerald::Atom.new('nil?'),
+  describe "logical operations" do
+    it "generates a symbol and a number on separate lines when querying nil outside a list" do
+      compiled_code = Emerald::Rubify.new([Emerald::Atom.new("nil?"),
                                            Emerald::Number.new(1.0)]).rubify
-      expect(compiled_code).to eq(':nil?'"\n"'1.0')
+      expect(compiled_code).to eq(":nil?""\n""1.0")
     end
 
-    it 'generates code for querying nil on a number from a nil-query function' do
+    it "generates code for querying nil on a number from a nil-query function" do
       compiled_code = Emerald::Rubify.new(
-        [Emerald::List.new(Emerald::Atom.new('nil?'),
+        [Emerald::List.new(Emerald::Atom.new("nil?"),
                            Emerald::Number.new(1.0))]
       ).rubify
-      expect(compiled_code).to eq('1.0.nil?')
+      expect(compiled_code).to eq("1.0.nil?")
     end
 
-    it 'generates code for querying nil on a string from a nil-query function' do
+    it "generates code for querying nil on a string from a nil-query function" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('nil?'),
+                                              Emerald::Atom.new("nil?"),
                                               Emerald::String.new('"i like"')
                                             )
                                           ]).rubify
       expect(compiled_code).to eq('"i like".nil?')
     end
 
-    it 'generates code for querying empty from an empty-query function in a list' do
+    it "generates code for querying empty from an empty-query function in a list" do
       compiled_code = Emerald::Rubify.new([
                                             Emerald::List.new(
-                                              Emerald::Atom.new('empty?'),
+                                              Emerald::Atom.new("empty?"),
                                               Emerald::String.new('"bumblebee"')
                                             )
                                           ]).rubify
       expect(compiled_code).to eq('"bumblebee".empty?')
     end
 
-    it 'raises an InvalidFunctionError when a list has no function call' do
+    it "raises an InvalidFunctionError when a list has no function call" do
       expect do
         Emerald::Rubify.new([
                               Emerald::List.new(Emerald::String.new('"bee"'))

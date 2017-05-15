@@ -1,7 +1,7 @@
-require_relative 'atom'
-require_relative 'number'
-require_relative 'list'
-require_relative 'string'
+require_relative "atom"
+require_relative "number"
+require_relative "list"
+require_relative "string"
 
 module Emerald
   class Parser
@@ -32,14 +32,14 @@ module Emerald
     def parse_node(source)
       first_char = source.slice(0)
       case first_char
-      when ' '
+      when " "
         parse_whitespace(source)
       when /[a-zA-Z]/
         parse_atom(source)
       when /[\d]/
         parse_number(source)
       when /[+-]/
-        source.slice(1) == ' ' ? parse_atom(source) : parse_number(source)
+        source.slice(1) == " " ? parse_atom(source) : parse_number(source)
       when /[*\/]/
         parse_atom(source)
       when /"/
