@@ -32,20 +32,20 @@ module Emerald
     def parse_node(source)
       first_char = source.slice(0)
       case first_char
-      when " "
-        parse_whitespace(source)
-      when /[a-zA-Z]/
-        parse_atom(source)
-      when /[\d]/
-        parse_number(source)
-      when /[+-]/
-        source.slice(1) == " " ? parse_atom(source) : parse_number(source)
-      when /[*\/]/
-        parse_atom(source)
-      when /"/
-        parse_string(source)
-      when /[(]/, /[)]/
-        parse_list(source)
+        when " "
+          parse_whitespace(source)
+        when /[a-zA-Z]/
+          parse_atom(source)
+        when /[\d]/
+          parse_number(source)
+        when /[+-]/
+          source.slice(1) == " " ? parse_atom(source) : parse_number(source)
+        when /[*\/]/
+          parse_atom(source)
+        when /"/
+          parse_string(source)
+        when /[(]/, /[)]/
+          parse_list(source)
       end
     end
 
@@ -81,8 +81,14 @@ module Emerald
     end
 
     def parse_list(source)
-      pattern = /\(.*\)/
-      raise InvalidListError, ERROR_INVALID_LIST unless pattern.match(source)
+      # balance = find_balanced_parentheses(source)
+      # puts first_balance = source[0..balance]
+      # puts rest = source[balance + 1.. source.size]
+
+      curved_pattern = /\(.*\)/
+      square_pattern = /\[.*\]/
+      raise InvalidListError, ERROR_INVALID_LIST unless ( curved_pattern.match(source) || square_pattern.match(source) )
+      
       list_range = pattern.match(source).to_s
       rest_of_source = drop(source, list_range.size)
       list_contents = list_range[1...(list_range.size - 1)]
@@ -91,6 +97,18 @@ module Emerald
       list = List.new(*child)
       [list, rest_of_source]
     end
+
+    # def find_balanced_parentheses(source)
+    #   paren_list = []
+    #   quote_list = []
+    #   source.split("").each_with_index do |char, index|
+    #     list.push(char) if /\(/.match(char)
+    #
+    #     list.pop if /\)/.match(char)
+    #     return index if list.empty?
+    #   end
+    # end
+
 
     def drop(source, count)
       range = count..(source.size)
