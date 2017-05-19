@@ -4,6 +4,7 @@ require "emerald/atom"
 require "emerald/string"
 require "emerald/number"
 require "emerald/list"
+require "emerald/variable"
 
 RSpec.describe Emerald::Rubify do
   it "compiles an empty source" do
@@ -35,7 +36,7 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq("5.0")
     end
 
-    it "generates two numbers on separate lines from two numbers" do
+    it "generates two numbers on separate lines from numbers outside a list" do
       compiled_code = Emerald::Rubify.new([Emerald::Number.new(1.0),
                                            Emerald::Number.new(3.0)]).rubify
       expect(compiled_code).to eq("1.0\n3.0")
@@ -50,7 +51,7 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq('"Hey there"')
     end
 
-    it "generates two strings on separate lines from two strings" do
+    it "generates two strings on separate lines from strings outside a list" do
       compiled_code = Emerald::Rubify.new([Emerald::String.new('"goat"'),
                                            Emerald::String.new('"duck"')]).rubify
       expect(compiled_code).to eq('"goat"'"\n"'"duck"')
@@ -206,6 +207,41 @@ RSpec.describe Emerald::Rubify do
                               Emerald::List.new(Emerald::String.new('"bee"'))
                             ]).rubify
       end.to raise_error(Emerald::Rubify::InvalidLispFunctionError)
+    end
+
+    describe "variable assignment" do
+      it "generates code for global variable assignment of a string" do
+        compiled_code = Emerald::Rubify.new( [ Emerald::List.new(
+            Emerald::Atom.new("def"),
+            Emerald::Atom.new("input"),
+            Emerald::String.new('"Hello"'))
+                                             ]).rubify
+
+        expect(compiled_code).to eq('input = "Hello"')
+      end
+
+      it "generates code for global variable assignment of a number" do
+        compiled_code = Emerald::Rubify.new( [ Emerald::List.new(
+            Emerald::Atom.new("def"),
+            Emerald::Atom.new("input"),
+            Emerald::Number.new(4))]).rubify
+
+        expect(compiled_code).to eq('input = 4')
+      end
+
+      it "generates code for global variable assignment of numbers" do
+        compiled_code = Emerald::Rubify.new( [ Emerald::List.new(
+            Emerald::Atom.new("def"),
+            Emerald::Atom.new("input"),
+            Emerald::List.new(
+            Emerald::Atom.new('+'),
+                      Emerald::Number.new(4),
+                      Emerald::Number.new(2))
+        )
+                                             ]).rubify
+
+        expect(compiled_code).to eq('input = 4 + 2')
+      end
     end
   end
 end

@@ -61,39 +61,58 @@ RSpec.describe "Emerald" do
         raise_error(Emerald::Rubify::InvalidLispFunctionError)
     end
 
-    it "compiles and evaluates a valid lisp expression with a number" do
-      create_test_file("5")
+    context "numeric operations" do
+      it "compiles and evaluates a valid lisp expression with a number" do
+        create_test_file("5")
 
-      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
-      expect(stdout).to eq("5.0")
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq("5.0")
+      end
+
+      it "compiles and evaluates a valid lisp expression with addition" do
+        create_test_file("(+ 2 5)")
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq("7.0")
+      end
+
+      it "compiles and evaluates a valid lip expression with subtraction" do
+        create_test_file("(- 5 2 1)")
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq("2.0")
+      end
+
+      it "compiles and evaluates a valid lip expression with division" do
+        create_test_file("(/ 20 2 2)")
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq("5.0")
+      end
+
+      it "compiles and evaluates a valid lip expression with multiplication" do
+        create_test_file("(* 12 2 2)")
+
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq("48.0")
+      end
     end
 
-    it "compiles and evaluates a valid lisp expression with addition" do
-      create_test_file("(+ 2 5)")
+    context "variable assignment" do
 
-      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
-      expect(stdout).to eq("7.0")
-    end
+      it "compiles and evaluates global variable assignments" do
+        create_test_file('(def input "Hello")')
 
-    it "compiles and evaluates a valid lip expression with subtraction" do
-      create_test_file("(- 5 2 1)")
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq('"Hello"')
+      end
 
-      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
-      expect(stdout).to eq("2.0")
-    end
+      it "compiles and evaluates local variable assignments" do
+        create_test_file('(let [x (+ 1 2) ] x )')
 
-    it "compiles and evaluates a valid lip expression with division" do
-      create_test_file("(/ 20 2 2)")
-
-      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
-      expect(stdout).to eq("5.0")
-    end
-
-    it "compiles and evaluates a valid lip expression with multiplication" do
-      create_test_file("(* 12 2 2)")
-
-      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
-      expect(stdout).to eq("48.0")
+        stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+        expect(stdout).to eq('3')
+      end
     end
 
     def create_test_file(file_contents)

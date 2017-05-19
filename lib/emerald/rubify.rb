@@ -31,9 +31,8 @@ module Emerald
       when String
         serialise_string(source)
       when List
-        list_elements = first_node.elements
-        return if list_elements.empty?
-        list_elements.first.is_a?(Atom) ? serialise_atom(list_elements) : (raise InvalidLispFunctionError)
+        return if first_node.elements.empty?
+        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
       end
     end
 
@@ -46,6 +45,8 @@ module Emerald
         [numeric_operation(first_node, atom_args), []]
       when "logical_ops"
         logical_operation(first_node, atom_args)
+      when "variable"
+        [assign_variable(first_node, atom_args), []]
       when "symbol"
         [":" + first_node, atom_args]
       end
@@ -77,6 +78,7 @@ module Emerald
       atom_types = {
         /^[-+*\/<>=]+$/ => "num_ops",
         /^[nil|empty?]+$/ => "logical_ops",
+        /^[def]+$/ => "variable",
         /[\w]/ => "symbol"
       }
       atom_types.map { |k, v| v if k.match(node) }.compact
@@ -91,6 +93,11 @@ module Emerald
     def logical_operation(operator, arguments)
       arg = serialise_node(arguments)
       ["#{arg.first}.#{operator}", arg.slice(1..arg.size)]
+    end
+
+    def assign_variable(variable_type, arguments)
+      variable_assignment, rest = Emerald::Variable.new(variable_type, arguments).assign_variable
+      variable_assignment + serialise_node(rest).first.to_s
     end
 
     class InvalidLispFunctionError < StandardError
