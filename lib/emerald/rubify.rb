@@ -98,8 +98,13 @@ module Emerald
     end
 
     def assign_variable(variable_type, arguments)
-      variable_assignment, rest = Emerald::Variable.new(variable_type, arguments).assign_variable
-      variable_assignment + serialise_node(rest).first.to_s
+      if variable_type == "def"
+        variable_assignment, rest = Emerald::Variable.global_variable(arguments)
+        variable_assignment + serialise_node(rest).first.to_s
+      elsif variable_type == "let"
+        variable_assignment, rest = Emerald::Variable.local_variable(arguments)
+        'begin\n\t' + variable_assignment + serialise_node(rest).first.to_s + '\nend'
+      end
     end
 
     class InvalidLispFunctionError < StandardError

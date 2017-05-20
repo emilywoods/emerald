@@ -34,5 +34,28 @@ RSpec.describe Emerald::Variable do
 
       expect(variable_assignment).to eq(['x = ', [Emerald::List.new(Emerald::Atom.new('+'), Emerald::Number.new(5.0))]])
     end
+
+    it "sets up local variable assignment in a string" do
+      variables_and_assignments = [Emerald::List.new( 
+                                                     Emerald::List.new(
+                                                       Emerald::Atom.new("x"), 
+                                                       Emerald::Number.new(1.0)))]
+
+      variable_assignment = Emerald::Variable.new('let', variables_and_assignments).assign_variable
+      expect(variable_assignment).to eq(['begin\n\t',Emerald::List.new(
+                                                       Emerald::Atom.new("x"), 
+                                                       Emerald::Number.new(1.0)), 'end'])
+    end
+
+
+    it "raises an error if local variable assigment does not occur within a list" do
+        expect{Emerald::Variable.new('let', [Emerald::List.new( Emerald::Atom.new("x"),
+                                                              Emerald::Number.new(1.0))]).assign_variable}.to raise_error(Emerald::Variable::InvalidVariableAssignment) 
+    end
+
+    it "raises an error if the first variable is not an atom " do
+      expect{Emerald::Variable.new('let', [Emerald::List.new(Emerald::List.new(
+          Emerald::Number.new(1.0)))]).assign_variable}.to raise_error(Emerald::Variable::InvalidVariableAssignment)
+    end
   end
 end
