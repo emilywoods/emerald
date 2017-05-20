@@ -20,13 +20,8 @@ module Emerald
     end
 
     def global_variable(variables)
-      variable_assignee = drop(variables, 1)
-      variables.first.is_a?(Atom) ? ["#{variables.first.value } = ", variable_assignee] : (raise InvalidVariableAssignment)
-    end
-
-    def drop(source, count)
-      range = count..(source.size)
-      source.slice(range)
+      values = variables.slice(1..variables.size)
+      variables.first.is_a?(Atom) ? ["#{variables.first.value } = ", values] : (raise InvalidVariableAssignment)
     end
 
     class InvalidVariableAssignment < StandardError

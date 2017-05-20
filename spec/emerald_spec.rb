@@ -104,11 +104,11 @@ RSpec.describe "Emerald" do
         create_test_file('(def input "Hello")')
 
         stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
-        expect(stdout).to eq('"Hello"')
+        expect(stdout).to eq("Hello")
       end
 
       it "compiles and evaluates local variable assignments" do
-        create_test_file('(let [x (+ 1 2) ] x )')
+        create_test_file('(let [x (+ 1 2)] x )')
 
         stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
         expect(stdout).to eq('3')

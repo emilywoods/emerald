@@ -1,3 +1,5 @@
+require_relative 'variable'
+
 module Emerald
   class Rubify
     def initialize(source)
@@ -77,8 +79,8 @@ module Emerald
     def type_of_atom(node)
       atom_types = {
         /^[-+*\/<>=]+$/ => "num_ops",
-        /^[nil|empty?]+$/ => "logical_ops",
-        /^[def]+$/ => "variable",
+        /(?:empty\?)|(?:nil\?)/ => "logical_ops",
+        /(?:let)|(?:def)/ => "variable",
         /[\w]/ => "symbol"
       }
       atom_types.map { |k, v| v if k.match(node) }.compact

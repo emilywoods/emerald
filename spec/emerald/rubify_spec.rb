@@ -242,6 +242,19 @@ RSpec.describe Emerald::Rubify do
 
         expect(compiled_code).to eq('input = 4 + 2')
       end
+
+      it "generates code for local variable assignment of a string" do
+        compiled_code = Emerald::Rubify.new( [ Emerald::List.new(
+            Emerald::Atom.new("let"),
+            Emerald::Atom.new("input"),
+            Emerald::List.new(
+                Emerald::Atom.new('+'),
+                Emerald::Number.new(4))
+        )
+                                             ]).rubify
+
+        expect(compiled_code).to eq('begin\n\tinput = 4\end')
+      end
     end
   end
 end
