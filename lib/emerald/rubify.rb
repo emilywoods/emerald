@@ -34,6 +34,7 @@ module Emerald
         serialise_string(source)
       when List
         return if first_node.elements.empty?
+        serialise_node(first_node.elements) if first_node.elements.first.is_a?(List)
         first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
       end
     end
@@ -99,12 +100,27 @@ module Emerald
 
     def assign_variable(variable_type, arguments)
       if variable_type == "def"
-        variable_assignment, rest = Emerald::Variable.global_variable(arguments)
-        variable_assignment + serialise_node(rest).first.to_s
+        global_variables(arguments)
       elsif variable_type == "let"
-        variable_assignment, rest = Emerald::Variable.local_variable(arguments)
-        'begin\n\t' + variable_assignment + serialise_node(rest).first.to_s + '\nend'
+        raise InvalidVariableAssignment unless arguments.first.is_a?(List)
+        "begin\n\t" + assign_local_variables(arguments).to_s + "\nend"
       end
+    end
+
+    def assign_local_variables(arguments)
+      arguments.first.elements.flatten.map {|var_assignment_list|
+        raise InvalidVariableAssignment if (!var_assignment_list.is_a?(List) || !var_assignment_list.elements.first.is_a?(Atom))
+        global_variables(var_assignment_list.elements)
+      }.join("\n\t")
+    end
+
+    def global_variables(variables)
+      values = variables.slice(1..variables.size)
+      raise InvalidVariableAssignment unless variables.first.is_a?(Atom)
+      "#{variables.first.value } = " + serialise_node(values).first.to_s
+    end
+
+    class InvalidVariableAssignment < StandardError
     end
 
     class InvalidLispFunctionError < StandardError

@@ -250,7 +250,7 @@ RSpec.describe Emerald::Rubify do
           Emerald::Atom.new("let"),
           Emerald::List.new(Emerald::List.new(Emerald::Atom.new("input"), Emerald::Number.new(4))))]).rubify
 
-      expect(compiled_code).to eq('begin\n\tinput = 4\nend')
+      expect(compiled_code).to eq("begin\n\tinput = 4\nend")
     end
 
     it "generates code for local variable assignment of two strings" do
@@ -259,7 +259,7 @@ RSpec.describe Emerald::Rubify do
           Emerald::List.new(Emerald::List.new(Emerald::Atom.new("input"), Emerald::Number.new(4)),
                             Emerald::List.new(Emerald::Atom.new("another"), Emerald::Number.new(5))))]).rubify
 
-      expect(compiled_code).to eq('begin\n\tinput = 4\n\tanother = 5\nend')
+      expect(compiled_code).to eq("begin\n\tinput = 4\n\tanother = 5\nend")
     end
   end
 end
