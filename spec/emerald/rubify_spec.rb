@@ -4,7 +4,6 @@ require "emerald/atom"
 require "emerald/string"
 require "emerald/number"
 require "emerald/list"
-require "emerald/variable"
 
 RSpec.describe Emerald::Rubify do
   it "compiles an empty source" do
@@ -245,7 +244,7 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq('input = 4 + 2')
     end
 
-    it "generates code for local variable assignment of a string" do
+    it "generates code for local variable assignment of a number" do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
           Emerald::Atom.new("let"),
           Emerald::List.new(Emerald::List.new(Emerald::Atom.new("input"), Emerald::Number.new(4))))]).rubify
@@ -253,13 +252,24 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq("begin\n\tinput = 4\nend")
     end
 
-    it "generates code for local variable assignment of two strings" do
+    it "generates code for local variable assignment of two numbers" do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
           Emerald::Atom.new("let"),
           Emerald::List.new(Emerald::List.new(Emerald::Atom.new("input"), Emerald::Number.new(4)),
                             Emerald::List.new(Emerald::Atom.new("another"), Emerald::Number.new(5))))]).rubify
 
       expect(compiled_code).to eq("begin\n\tinput = 4\n\tanother = 5\nend")
+    end
+
+    it "generates code for local variable assignment of two numbers with addition" do
+      compiled_code = Emerald::Rubify.new([Emerald::List.new(
+          Emerald::Atom.new("let"),
+          Emerald::List.new(Emerald::List.new(Emerald::Atom.new("a"), Emerald::Number.new(4)),
+                            Emerald::List.new(Emerald::Atom.new("b"), Emerald::Number.new(5))),
+          Emerald::List.new(Emerald::Atom.new("+"), Emerald::Atom.new("a"), Emerald::Atom.new("b"))
+      )]).rubify
+
+      expect(compiled_code).to eq("begin\n\ta = 4\n\tb = 5\n\ta + b\nend")
     end
   end
 end

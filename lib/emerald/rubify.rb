@@ -1,5 +1,3 @@
-require_relative 'variable'
-
 module Emerald
   class Rubify
     def initialize(source)
@@ -89,7 +87,11 @@ module Emerald
 
     def numeric_operation(operator, arguments)
       arguments.map.with_index do |element, index|
-        "#{element.number} " + (arguments[index + 1].nil? ? "" : "#{operator} ")
+        if element.is_a?(Number)
+          "#{element.number} " + (arguments[index + 1].nil? ? "" : "#{operator} ")
+        elsif element.is_a?(Atom)
+          "#{element.value.to_s} " + (arguments[index + 1].nil? ? "" : "#{operator} ") if element.is_a?(Atom)
+        end
       end.join
     end
 
@@ -103,21 +105,36 @@ module Emerald
         global_variables(arguments)
       elsif variable_type == "let"
         raise InvalidVariableAssignment unless arguments.first.is_a?(List)
-        "begin\n\t" + assign_local_variables(arguments).to_s + "\nend"
+        local_variables(arguments)
       end
     end
 
-    def assign_local_variables(arguments)
-      arguments.first.elements.flatten.map {|var_assignment_list|
+    def local_variables(local_var_functns)
+      if local_var_functns.size > 1
+        block_operations = local_block_operations(local_var_functns)
+      end
+
+      "begin\n\t" +
+          assign_local_variables(local_var_functns.first).to_s +
+          (!block_operations.nil? ? block_operations : "") +
+          "\nend"
+    end
+
+    def local_block_operations(arguments)
+      "\n\t" + serialise_node(arguments[1..arguments.size]).first.to_s.strip
+    end
+
+    def assign_local_variables(variable_lists)
+      variable_lists.elements.map {|var_assignment_list|
         raise InvalidVariableAssignment if (!var_assignment_list.is_a?(List) || !var_assignment_list.elements.first.is_a?(Atom))
         global_variables(var_assignment_list.elements)
       }.join("\n\t")
     end
 
-    def global_variables(variables)
-      values = variables.slice(1..variables.size)
-      raise InvalidVariableAssignment unless variables.first.is_a?(Atom)
-      "#{variables.first.value } = " + serialise_node(values).first.to_s
+    def global_variables(var_and_values)
+      values = var_and_values.slice(1..var_and_values.size)
+      raise InvalidVariableAssignment unless var_and_values.first.is_a?(Atom)
+      "#{var_and_values.first.value } = " + serialise_node(values).first.to_s
     end
 
     class InvalidVariableAssignment < StandardError
