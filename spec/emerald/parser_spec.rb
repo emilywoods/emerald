@@ -213,7 +213,7 @@ RSpec.describe Emerald::Parser do
                                            Emerald::Atom.new("x"))])
     end
 
-    it "parses lists for local variable assignment" do
+    it "parses lists for local variable assignment with operations" do
       source = "(let [x 1] (+ x 3 ))"
       ast = Emerald::Parser.new(source).parse
 

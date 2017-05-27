@@ -271,20 +271,5 @@ RSpec.describe Emerald::Rubify do
 
       expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\n\tx + y\nend")
     end
-
-    it "generates local variable assignment" do
-      compiled_code = Emerald::Rubify.new([Emerald::List.new(Emerald::Atom.new("let"),
-                                                             Emerald::List.new(
-                                                                 Emerald::Atom.new("x"),
-                                                                 Emerald::Number.new(1),
-                                                             ),
-                                                             Emerald::List.new(
-                                                                 Emerald::Atom.new("+"),
-                                                                 Emerald::Atom.new("x"),
-                                                                 Emerald::Number.new(3),
-                                                             ))]).rubify
-
-      expect(compiled_code).to eq("begin\n\tx = 1\n\tx + 3\nend")
-    end
   end
 end
