@@ -205,27 +205,27 @@ RSpec.describe Emerald::Parser do
 
       expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
                                            Emerald::List.new(
-                                               Emerald::Atom.new("x"),
-                                               Emerald::Number.new(1),
-                                               Emerald::Atom.new("y"),
-                                               Emerald::Number.new(2)
+                                             Emerald::Atom.new("x"),
+                                             Emerald::Number.new(1),
+                                             Emerald::Atom.new("y"),
+                                             Emerald::Number.new(2)
                                            ),
                                            Emerald::Atom.new("x"))])
     end
 
-    it "parses lists for local variable assignment" do
+    it "parses lists for local variable assignment with operations" do
       source = "(let [x 1] (+ x 3 ))"
       ast = Emerald::Parser.new(source).parse
 
       expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
                                            Emerald::List.new(
-                                               Emerald::Atom.new("x"),
-                                               Emerald::Number.new(1),
+                                             Emerald::Atom.new("x"),
+                                             Emerald::Number.new(1)
                                            ),
                                            Emerald::List.new(
-                                               Emerald::Atom.new("+"),
-                                               Emerald::Atom.new("x"),
-                                               Emerald::Number.new(3),
+                                             Emerald::Atom.new("+"),
+                                             Emerald::Atom.new("x"),
+                                             Emerald::Number.new(3)
                                            ))])
     end
 
