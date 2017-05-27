@@ -19,13 +19,13 @@ RSpec.describe Emerald::Rubify do
   describe "code generation from atoms" do
     it "generates a symbol from a single atom outside of a list" do
       compiled_code = Emerald::Rubify.new([Emerald::Atom.new("hello")]).rubify
-      expect(compiled_code).to eq(":hello")
+      expect(compiled_code).to eq("hello")
     end
 
     it "generates symbols on separate lines from two atoms outside a list" do
       compiled_code = Emerald::Rubify.new([Emerald::Atom.new("hello"),
                                            Emerald::Atom.new("world")]).rubify
-      expect(compiled_code).to eq(":hello\n:world")
+      expect(compiled_code).to eq("hello\nworld")
     end
   end
 
@@ -169,7 +169,7 @@ RSpec.describe Emerald::Rubify do
     it "generates a symbol and a number on separate lines when querying nil outside a list" do
       compiled_code = Emerald::Rubify.new([Emerald::Atom.new("nil?"),
                                            Emerald::Number.new(1.0)]).rubify
-      expect(compiled_code).to eq(":nil?" "\n" "1.0")
+      expect(compiled_code).to eq("nil?" "\n" "1.0")
     end
 
     it "generates code for querying nil on a number from a nil-query function" do
@@ -244,32 +244,47 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq('input = 4 + 2')
     end
 
-    it "generates code for local variable assignment of a number" do
+    it "generates code for local variable assignment for x = 4 " do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
           Emerald::Atom.new("let"),
-          Emerald::List.new(Emerald::List.new(Emerald::Atom.new("input"), Emerald::Number.new(4))))]).rubify
+          Emerald::List.new(Emerald::Atom.new("x"), Emerald::Number.new(4)))]).rubify
 
-      expect(compiled_code).to eq("begin\n\tinput = 4\nend")
+      expect(compiled_code).to eq("begin\n\tx = 4\nend")
     end
 
-    it "generates code for local variable assignment of two numbers" do
+    it "generates code for local variable assignment of two variables: x = 4 and y = 5" do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
           Emerald::Atom.new("let"),
-          Emerald::List.new(Emerald::List.new(Emerald::Atom.new("input"), Emerald::Number.new(4)),
-                            Emerald::List.new(Emerald::Atom.new("another"), Emerald::Number.new(5))))]).rubify
+          Emerald::List.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
+                            Emerald::Atom.new("y"), Emerald::Number.new(5)))]).rubify
 
-      expect(compiled_code).to eq("begin\n\tinput = 4\n\tanother = 5\nend")
+      expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\nend")
     end
 
     it "generates code for local variable assignment of two numbers with addition" do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
           Emerald::Atom.new("let"),
-          Emerald::List.new(Emerald::List.new(Emerald::Atom.new("a"), Emerald::Number.new(4)),
-                            Emerald::List.new(Emerald::Atom.new("b"), Emerald::Number.new(5))),
-          Emerald::List.new(Emerald::Atom.new("+"), Emerald::Atom.new("a"), Emerald::Atom.new("b"))
+          Emerald::List.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
+                            Emerald::Atom.new("y"), Emerald::Number.new(5)),
+          Emerald::List.new(Emerald::Atom.new("+"), Emerald::Atom.new("x"), Emerald::Atom.new("y"))
       )]).rubify
 
-      expect(compiled_code).to eq("begin\n\ta = 4\n\tb = 5\n\ta + b\nend")
+      expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\n\tx + y\nend")
+    end
+
+    it "generates local variable assignment" do
+      compiled_code = Emerald::Rubify.new([Emerald::List.new(Emerald::Atom.new("let"),
+                                                             Emerald::List.new(
+                                                                 Emerald::Atom.new("x"),
+                                                                 Emerald::Number.new(1),
+                                                             ),
+                                                             Emerald::List.new(
+                                                                 Emerald::Atom.new("+"),
+                                                                 Emerald::Atom.new("x"),
+                                                                 Emerald::Number.new(3),
+                                                             ))]).rubify
+
+      expect(compiled_code).to eq("begin\n\tx = 1\n\tx + 3\nend")
     end
   end
 end
