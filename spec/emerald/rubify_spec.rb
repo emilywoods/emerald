@@ -237,8 +237,7 @@ RSpec.describe Emerald::Rubify do
           Emerald::Atom.new("+"),
           Emerald::Number.new(4),
           Emerald::Number.new(2))
-      )
-                                          ]).rubify
+      )]).rubify
 
       expect(compiled_code).to eq("input = 4 + 2")
     end
