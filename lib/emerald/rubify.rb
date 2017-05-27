@@ -32,7 +32,6 @@ module Emerald
         serialise_string(source)
       when List
         return if first_node.elements.empty?
-        serialise_node(first_node.elements) if first_node.elements.first.is_a?(List)
         first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
       end
     end
@@ -46,10 +45,10 @@ module Emerald
         [numeric_operation(first_node, atom_args), []]
       when "logical_ops"
         logical_operation(first_node, atom_args)
-      when "variable"
+      when "variable_assignment"
         [assign_variable(first_node, atom_args), []]
-      when "symbol"
-        [":" + first_node, atom_args]
+      when "variable"
+        [first_node, atom_args]
       end
     end
 
@@ -72,15 +71,15 @@ module Emerald
     def serialise_atom_as_symbol(source)
       first_node = source.first.value
       atom_args = source.slice(1..source.size)
-      [":" + first_node, atom_args]
+      [first_node, atom_args]
     end
 
     def type_of_atom(node)
       atom_types = {
         /^[-+*\/<>=]+$/ => "num_ops",
         /(?:empty\?)|(?:nil\?)/ => "logical_ops",
-        /(?:let)|(?:def)/ => "variable",
-        /[\w]/ => "symbol"
+        /(?:let)|(?:def)/ => "variable_assignment",
+        /[\w]/ => "variable"
       }
       atom_types.map { |k, v| v if k.match(node) }.compact
     end
@@ -101,46 +100,47 @@ module Emerald
     end
 
     def assign_variable(variable_type, arguments)
-      if variable_type == "def"
-        global_variables(arguments)
-      elsif variable_type == "let"
+      if /(?:def)/.match(variable_type)
+        global_variable(arguments)
+      elsif /(?:let)/.match(variable_type)
         raise InvalidVariableAssignment unless arguments.first.is_a?(List)
-        local_variables(arguments)
+        local_variable(arguments)
       end
     end
 
-    def local_variables(local_var_functns)
-      if local_var_functns.size > 1
-        block_operations = local_block_operations(local_var_functns)
+    def local_variable(local_var_lists)
+      if local_var_lists.size > 1
+        var_operations = local_var_operations(local_var_lists[1..local_var_lists.size])
       end
 
       "begin\n\t" +
-          assign_local_variables(local_var_functns.first).to_s +
-          (!block_operations.nil? ? block_operations : "") +
+          local_var_assignment(local_var_lists.first).to_s +
+          (!var_operations.nil? ? var_operations : "") +
           "\nend"
     end
 
-    def local_block_operations(arguments)
-      "\n\t" + serialise_node(arguments[1..arguments.size]).first.to_s.strip
+    def local_var_operations(local_var_ops)
+      "\n\t" + serialise_node(local_var_ops).first.to_s.strip
     end
 
-    def assign_local_variables(variable_lists)
-      variable_lists.elements.map {|var_assignment_list|
-        raise InvalidVariableAssignment if (!var_assignment_list.is_a?(List) || !var_assignment_list.elements.first.is_a?(Atom))
-        global_variables(var_assignment_list.elements)
+    def local_var_assignment(var_list)
+      var_list.elements.each_slice(2).map {|var, value|
+        raise InvalidVariableAssignment unless var.is_a?(Atom)
+        global_variable([var, value])
       }.join("\n\t")
     end
 
-    def global_variables(var_and_values)
+    def global_variable(var_and_values)
       values = var_and_values.slice(1..var_and_values.size)
       raise InvalidVariableAssignment unless var_and_values.first.is_a?(Atom)
-      "#{var_and_values.first.value } = " + serialise_node(values).first.to_s
+      "#{var_and_values.first.value } = " + serialise_node(values).first.to_s.strip
+    end
+
+    class InvalidLispFunctionError < StandardError
     end
 
     class InvalidVariableAssignment < StandardError
     end
 
-    class InvalidLispFunctionError < StandardError
-    end
   end
 end
