@@ -199,6 +199,36 @@ RSpec.describe Emerald::Parser do
                                            Emerald::Number.new(4))])
     end
 
+    it "parses lists for local variable assignment" do
+      source = "(let [x 1 y 2] x)"
+      ast = Emerald::Parser.new(source).parse
+
+      expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
+                                           Emerald::List.new(
+                                               Emerald::Atom.new("x"),
+                                               Emerald::Number.new(1),
+                                               Emerald::Atom.new("y"),
+                                               Emerald::Number.new(2)
+                                           ),
+                                           Emerald::Atom.new("x"))])
+    end
+
+    it "parses lists for local variable assignment" do
+      source = "(let [x 1] (+ x 3 ))"
+      ast = Emerald::Parser.new(source).parse
+
+      expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
+                                           Emerald::List.new(
+                                               Emerald::Atom.new("x"),
+                                               Emerald::Number.new(1),
+                                           ),
+                                           Emerald::List.new(
+                                               Emerald::Atom.new("+"),
+                                               Emerald::Atom.new("x"),
+                                               Emerald::Number.new(3),
+                                           ))])
+    end
+
     it "raises an error for invalid lists missing closing bracket" do
       source = "(+ 2 (+ 3 5)"
       expect { Emerald::Parser.new(source).parse }.to \
