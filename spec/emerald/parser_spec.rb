@@ -205,10 +205,10 @@ RSpec.describe Emerald::Parser do
 
       expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
                                            Emerald::List.new(
-                                               Emerald::Atom.new("x"),
-                                               Emerald::Number.new(1),
-                                               Emerald::Atom.new("y"),
-                                               Emerald::Number.new(2)
+                                             Emerald::Atom.new("x"),
+                                             Emerald::Number.new(1),
+                                             Emerald::Atom.new("y"),
+                                             Emerald::Number.new(2)
                                            ),
                                            Emerald::Atom.new("x"))])
     end
@@ -219,13 +219,13 @@ RSpec.describe Emerald::Parser do
 
       expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
                                            Emerald::List.new(
-                                               Emerald::Atom.new("x"),
-                                               Emerald::Number.new(1),
+                                             Emerald::Atom.new("x"),
+                                             Emerald::Number.new(1)
                                            ),
                                            Emerald::List.new(
-                                               Emerald::Atom.new("+"),
-                                               Emerald::Atom.new("x"),
-                                               Emerald::Number.new(3),
+                                             Emerald::Atom.new("+"),
+                                             Emerald::Atom.new("x"),
+                                             Emerald::Number.new(3)
                                            ))])
     end
 

@@ -89,7 +89,7 @@ module Emerald
         if element.is_a?(Number)
           "#{element.number} " + (arguments[index + 1].nil? ? "" : "#{operator} ")
         elsif element.is_a?(Atom)
-          "#{element.value.to_s} " + (arguments[index + 1].nil? ? "" : "#{operator} ") if element.is_a?(Atom)
+          "#{element.value} " + (arguments[index + 1].nil? ? "" : "#{operator} ") if element.is_a?(Atom)
         end
       end.join
     end
@@ -100,9 +100,9 @@ module Emerald
     end
 
     def assign_variable(variable_type, arguments)
-      if /(?:def)/.match(variable_type)
+      if /(?:def)/ =~ variable_type
         global_variable(arguments)
-      elsif /(?:let)/.match(variable_type)
+      elsif /(?:let)/ =~ variable_type
         raise InvalidVariableAssignment unless arguments.first.is_a?(List)
         local_variable(arguments)
       end
@@ -114,9 +114,9 @@ module Emerald
       end
 
       "begin\n\t" +
-          local_var_assignment(local_var_lists.first).to_s +
-          (!var_operations.nil? ? var_operations : "") +
-          "\nend"
+        local_var_assignment(local_var_lists.first).to_s +
+        (!var_operations.nil? ? var_operations : "") +
+        "\nend"
     end
 
     def local_var_operations(local_var_ops)
@@ -124,16 +124,16 @@ module Emerald
     end
 
     def local_var_assignment(var_list)
-      var_list.elements.each_slice(2).map {|var, value|
+      var_list.elements.each_slice(2).map do |var, value|
         raise InvalidVariableAssignment unless var.is_a?(Atom)
         global_variable([var, value])
-      }.join("\n\t")
+      end.join("\n\t")
     end
 
     def global_variable(var_and_values)
       values = var_and_values.slice(1..var_and_values.size)
       raise InvalidVariableAssignment unless var_and_values.first.is_a?(Atom)
-      "#{var_and_values.first.value } = " + serialise_node(values).first.to_s.strip
+      "#{var_and_values.first.value} = " + serialise_node(values).first.to_s.strip
     end
 
     class InvalidLispFunctionError < StandardError
@@ -141,6 +141,5 @@ module Emerald
 
     class InvalidVariableAssignment < StandardError
     end
-
   end
 end

@@ -44,7 +44,7 @@ module Emerald
         parse_atom(source)
       when /"/
         parse_string(source)
-      when /[(]/, /[)]/,/\[/, /\]/
+      when /[(]/, /[)]/, /\[/, /\]/
         parse_list(source)
       end
     end
