@@ -44,7 +44,7 @@ module Emerald
         parse_atom(source)
       when /"/
         parse_string(source)
-      when /[(]/, /[)]/,/\[/, /\]/
+      when /[(]/, /[)]/, /\[/, /\]/
         parse_list(source)
       end
     end
@@ -81,7 +81,7 @@ module Emerald
     end
 
     def parse_list(source)
-      pattern = /\(.*\)|\[.*\]/
+      pattern = /\(.*\)|\[.*\]/m
       raise InvalidListError, ERROR_INVALID_LIST unless pattern.match(source)
       list_range = pattern.match(source).to_s
       rest_of_source = drop(source, list_range.size)

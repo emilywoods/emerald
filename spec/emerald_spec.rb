@@ -5,59 +5,59 @@ require "emerald/parser"
 require "emerald/compiler"
 
 RSpec.describe "Emerald" do
-  let(:stdout) {spy("STDOUT")}
-  let(:user_comms) {Emerald::UserCommsHelper.new(stdout)}
-  let(:parser) {Emerald::Parser}
+  let(:stdout) { spy("STDOUT") }
+  let(:user_comms) { Emerald::UserCommsHelper.new(stdout) }
+  let(:parser) { Emerald::Parser }
 
   describe "given an invalid file is passed in" do
     it "raises an InvalidFileType error" do
-      expect {user_comms.verify_input("test$-!f&ile")}.to\
+      expect { user_comms.verify_input("test$-!f&ile") }.to\
         raise_error(Emerald::UserCommsHelper::InvalidFileError)
     end
 
     it "raises an error with invalid file message" do
-      expect {user_comms.verify_input("test$-!f&ile")}.to\
+      expect { user_comms.verify_input("test$-!f&ile") }.to\
         raise_error.with_message(Emerald::UserCommsHelper::ERROR_INVALID_FILE)
     end
   end
 
   describe "given no file is passed in" do
     it "returns an InvalidFileType error" do
-      expect {user_comms.verify_input("")}.to\
+      expect { user_comms.verify_input("") }.to\
         raise_error(Emerald::UserCommsHelper::InvalidFileError)
     end
 
     it "raises an error with incorrect file type message" do
-      expect {user_comms.verify_input("")}.to \
+      expect { user_comms.verify_input("") }.to \
         raise_error.with_message(Emerald::UserCommsHelper::ERROR_INVALID_FILE)
     end
   end
 
   describe "given a valid lisp file is passed" do
-    let(:test_file) {Tempfile.new("new-file")}
+    let(:test_file) { Tempfile.new("new-file") }
 
     it "raises an InvalidListError for a list without a closing bracket" do
       create_test_file("(+ 5 2")
 
-      expect {compile_lisp(test_file)}.to \
+      expect { compile_lisp(test_file) }.to \
         raise_error(parser::InvalidListError)
-      expect {compile_lisp(test_file)}.to \
+      expect { compile_lisp(test_file) }.to \
         raise_error.with_message(parser::ERROR_INVALID_LIST)
     end
 
     it "raises an InvalidListError for a list without an opening bracket" do
       create_test_file("+ 5 2 )")
 
-      expect {compile_lisp(test_file)}.to \
+      expect { compile_lisp(test_file) }.to \
         raise_error(parser::InvalidListError)
-      expect {compile_lisp(test_file)}.to \
+      expect { compile_lisp(test_file) }.to \
         raise_error.with_message(parser::ERROR_INVALID_LIST)
     end
 
     it "raises an InvalidListError for an invalid lisp expression" do
       create_test_file("( 5 + 5 )")
 
-      expect {compile_lisp(test_file)}.to \
+      expect { compile_lisp(test_file) }.to \
         raise_error(Emerald::Rubify::InvalidLispFunctionError)
     end
 
@@ -95,7 +95,6 @@ RSpec.describe "Emerald" do
       stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
       expect(stdout).to eq("48.0")
     end
-
 
     it "compiles and evaluates global variable assignments" do
       create_test_file('(def input "Hello")')
