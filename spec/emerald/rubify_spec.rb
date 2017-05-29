@@ -158,18 +158,13 @@ RSpec.describe Emerald::Rubify do
                                           ]).rubify
       expect(compiled_code).to eq("1.0 >= 2.0")
     end
-
-    # it "generates addition with negative arguments" do
-    # compiled_code = Emerald::Rubify.new([Emerald::Atom.new('+'), Emerald::Number.new(1.0), Emerald::Number.new(2.0), Emerald::Number.new(-9)]).rubify
-    # expect(compiled_code).to eq('1.0 + 2.0 - 9')
-    # end
   end
 
   describe "logical operations" do
     it "generates a symbol and a number on separate lines when querying nil outside a list" do
       compiled_code = Emerald::Rubify.new([Emerald::Atom.new("nil?"),
                                            Emerald::Number.new(1.0)]).rubify
-      expect(compiled_code).to eq("nil?" "\n" "1.0")
+      expect(compiled_code).to eq("nil?\n1.0")
     end
 
     it "generates code for querying nil on a number from a nil-query function" do
@@ -245,7 +240,7 @@ RSpec.describe Emerald::Rubify do
     it "generates code for local variable assignment for x = 4 " do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
         Emerald::Atom.new("let"),
-        Emerald::List.new(Emerald::Atom.new("x"), Emerald::Number.new(4)))]).rubify
+        Emerald::Vector.new(Emerald::Atom.new("x"), Emerald::Number.new(4)))]).rubify
 
       expect(compiled_code).to eq("begin\n\tx = 4\nend")
     end
@@ -253,7 +248,7 @@ RSpec.describe Emerald::Rubify do
     it "generates code for local variable assignment of two variables: x = 4 and y = 5" do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
         Emerald::Atom.new("let"),
-        Emerald::List.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
+        Emerald::Vector.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
                           Emerald::Atom.new("y"), Emerald::Number.new(5)))]).rubify
 
       expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\nend")
@@ -262,7 +257,7 @@ RSpec.describe Emerald::Rubify do
     it "generates code for local variable assignment of two numbers with addition" do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
         Emerald::Atom.new("let"),
-        Emerald::List.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
+        Emerald::Vector.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
                           Emerald::Atom.new("y"), Emerald::Number.new(5)),
         Emerald::List.new(Emerald::Atom.new("+"), Emerald::Atom.new("x"), Emerald::Atom.new("y"))
       )]).rubify

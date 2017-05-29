@@ -31,8 +31,9 @@ module Emerald
       when String
         serialise_string(source)
       when List
-        return if first_node.elements.empty?
-        first_node.elements.first.is_a?(Atom) ? serialise_atom(first_node.elements) : (raise InvalidLispFunctionError)
+        list_items = first_node.elements
+        return if list_items.empty?
+        list_items.first.is_a?(Atom) ? serialise_atom(list_items) : (raise InvalidLispFunctionError)
       end
     end
 
@@ -84,12 +85,12 @@ module Emerald
       atom_types.map { |k, v| v if k.match(node) }.compact
     end
 
-    def numeric_operation(operator, arguments)
-      arguments.map.with_index do |element, index|
-        if element.is_a?(Number)
-          "#{element.number} " + (arguments[index + 1].nil? ? "" : "#{operator} ")
-        elsif element.is_a?(Atom)
-          "#{element.value} " + (arguments[index + 1].nil? ? "" : "#{operator} ") if element.is_a?(Atom)
+    def numeric_operation(operator, args)
+      args.map.with_index do |item, index|
+        if item.is_a?(Number)
+          "#{item.number} " + (args[index + 1].nil? ? "" : "#{operator} ")
+        elsif item.is_a?(Atom)
+          "#{item.value} " + (args[index + 1].nil? ? "" : "#{operator} ") if item.is_a?(Atom)
         end
       end.join
     end
@@ -103,7 +104,7 @@ module Emerald
       if /(?:def)/ =~ variable_type
         global_variable(arguments)
       elsif /(?:let)/ =~ variable_type
-        raise InvalidVariableAssignment unless arguments.first.is_a?(List)
+        raise InvalidVariableAssignment unless arguments.first.is_a?(Vector)
         local_variable(arguments)
       end
     end
