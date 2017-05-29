@@ -1,5 +1,5 @@
 Metrics/LineLength:
-  Max: 85
+  Max: 100
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -12,3 +12,10 @@ Style/RegexpLiteral:
     - percent_r
     - mixed
 
+  AllowInnerSlashes: true
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
