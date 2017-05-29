@@ -158,18 +158,13 @@ RSpec.describe Emerald::Rubify do
                                           ]).rubify
       expect(compiled_code).to eq("1.0 >= 2.0")
     end
-
-    # it "generates addition with negative arguments" do
-    # compiled_code = Emerald::Rubify.new([Emerald::Atom.new('+'), Emerald::Number.new(1.0), Emerald::Number.new(2.0), Emerald::Number.new(-9)]).rubify
-    # expect(compiled_code).to eq('1.0 + 2.0 - 9')
-    # end
   end
 
   describe "logical operations" do
     it "generates a symbol and a number on separate lines when querying nil outside a list" do
       compiled_code = Emerald::Rubify.new([Emerald::Atom.new("nil?"),
                                            Emerald::Number.new(1.0)]).rubify
-      expect(compiled_code).to eq("nil?" "\n" "1.0")
+      expect(compiled_code).to eq("nil?\n1.0")
     end
 
     it "generates code for querying nil on a number from a nil-query function" do

@@ -45,7 +45,7 @@ RSpec.describe Emerald::Parser do
     it "parses two integers" do
       source = "12345 789"
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::Number.new(12345),
+      expect(ast).to eq([Emerald::Number.new(12_345),
                          Emerald::Number.new(789)])
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Emerald::Parser do
     it "parses a list do" do
       source = "()"
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::List.new()])
+      expect(ast).to eq([Emerald::List.new])
     end
 
     it "parses a list of atoms" do
