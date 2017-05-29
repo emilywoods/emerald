@@ -7,6 +7,8 @@ module Emerald
   class Parser
     ERROR_INVALID_LIST = "Oh no! A list has been received without\
  matching brackets".freeze
+    ERROR_INVALID_VECTOR = "Oh no! A list has been received without\
+ matching brackets".freeze
 
     def initialize(source)
       @source = source
@@ -44,8 +46,10 @@ module Emerald
         parse_atom(source)
       when /"/
         parse_string(source)
-      when /[(]/, /[)]/, /\[/, /\]/
+      when /[(]/, /[)]/
         parse_list(source)
+      when /\[/, /\]/
+        parse_vector(source)
       end
     end
 
@@ -81,7 +85,7 @@ module Emerald
     end
 
     def parse_list(source)
-      pattern = /\(.*\)|\[.*\]/m
+      pattern = /\(.*\)/m
       raise InvalidListError, ERROR_INVALID_LIST unless pattern.match(source)
       list_range = pattern.match(source).to_s
       rest_of_source = drop(source, list_range.size)
@@ -92,12 +96,27 @@ module Emerald
       [list, rest_of_source]
     end
 
+    def parse_vector(source)
+      pattern = /\[.*\]/m
+      raise InvalidVectorError, ERROR_INVALID_VECTOR unless pattern.match(source)
+      vector_range = pattern.match(source).to_s
+      rest_of_source = drop(source, vector_range.size)
+      vector_contents = vector_range[1...(vector_range.size - 1)]
+
+      child = parse_input(vector_contents, [])
+      list = Vector.new(*child)
+      [list, rest_of_source]
+    end
+
     def drop(source, count)
       range = count..(source.size)
       source.slice(range)
     end
 
     class InvalidListError < StandardError
+    end
+
+    class InvalidVectorError < StandardError
     end
   end
 end

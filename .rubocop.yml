@@ -17,5 +17,22 @@ Style/RegexpLiteral:
 Style/Documentation:
   Enabled: false
 
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
 Metrics/AbcSize:
   Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Lint/ImplicitStringConcatenation:
+  Enabled: false
+
+Security/Eval:
+  Description: 'The use of eval represents a serious security risk.'
+  Enabled: false
+

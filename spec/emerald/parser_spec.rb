@@ -45,7 +45,7 @@ RSpec.describe Emerald::Parser do
     it "parses two integers" do
       source = "12345 789"
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::Number.new(12345),
+      expect(ast).to eq([Emerald::Number.new(12_345),
                          Emerald::Number.new(789)])
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Emerald::Parser do
     it "parses a list do" do
       source = "()"
       ast = Emerald::Parser.new(source).parse
-      expect(ast).to eq([Emerald::List.new()])
+      expect(ast).to eq([Emerald::List.new])
     end
 
     it "parses a list of atoms" do
@@ -199,12 +199,12 @@ RSpec.describe Emerald::Parser do
                                            Emerald::Number.new(4))])
     end
 
-    it "parses lists for local variable assignment" do
+    it "parses vectors and lists for local variable assignment" do
       source = "(let [x 1 y 2] x)"
       ast = Emerald::Parser.new(source).parse
 
       expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
-                                           Emerald::List.new(
+                                           Emerald::Vector.new(
                                              Emerald::Atom.new("x"),
                                              Emerald::Number.new(1),
                                              Emerald::Atom.new("y"),
@@ -213,12 +213,12 @@ RSpec.describe Emerald::Parser do
                                            Emerald::Atom.new("x"))])
     end
 
-    it "parses lists for local variable assignment with operations" do
+    it "parses vectors and lists for local variable assignment with operations" do
       source = "(let [x 1] (+ x 3 ))"
       ast = Emerald::Parser.new(source).parse
 
       expect(ast).to eq([Emerald::List.new(Emerald::Atom.new("let"),
-                                           Emerald::List.new(
+                                           Emerald::Vector.new(
                                              Emerald::Atom.new("x"),
                                              Emerald::Number.new(1)
                                            ),
@@ -250,6 +250,22 @@ RSpec.describe Emerald::Parser do
                                            Emerald::String.new('"(this"'))])
     end
   end
+
+  describe "vector parsing" do
+    it "parses a vector" do
+      source = "[x 1]"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Vector.new(Emerald::Atom.new('x'), Emerald::Number.new(1))])
+    end
+
+    it "parses a list within a vector" do
+      source = "[x (+ 2)]"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([Emerald::Vector.new(Emerald::Atom.new('x'),
+                                             Emerald::List.new( Emerald::Atom.new('+'), Emerald::Number.new(2)))])
+    end
+  end
+
 
   describe "number, atom and string parsing" do
     it "parses a string and a number" do
