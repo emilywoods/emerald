@@ -22,7 +22,7 @@ RSpec.describe "Compiler" do
     it "parses the lisp and returns an assigned global variable" do
       lisp_file_contents = "(def y (- 1 6))"
       compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
-      expect(compiled_lisp).to eq("y = 1.0 - 6.0")
+      expect(compiled_lisp).to eq("$y = 1.0 - 6.0")
     end
 
     it "parses the lisp and returns an assigned local variable" do
