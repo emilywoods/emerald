@@ -7,8 +7,6 @@ module Emerald
   class Parser
     ERROR_INVALID_LIST = "Oh no! A list has been received without\
  matching brackets".freeze
-    ERROR_INVALID_VECTOR = "Oh no! A list has been received without\
- matching brackets".freeze
 
     def initialize(source)
       @source = source
@@ -28,28 +26,26 @@ module Emerald
         ast.push(node) if node
         result = parse_node(source)
       end
-      ast
+      parse_sexp(ast)
     end
 
     def parse_node(source)
       first_char = source.slice(0)
       case first_char
-      when " "
-        parse_whitespace(source)
-      when /[a-zA-Z]/
-        parse_atom(source)
-      when /[\d]/
-        parse_number(source)
-      when /[+-]/
-        source.slice(1) == " " ? parse_atom(source) : parse_number(source)
-      when /[*\/]/
-        parse_atom(source)
-      when /"/
-        parse_string(source)
-      when /[(]/, /[)]/
-        parse_list(source)
-      when /\[/, /\]/
-        parse_vector(source)
+        when " "
+          parse_whitespace(source)
+        when /[a-zA-Z]/
+          parse_atom(source)
+        when /[\d]/
+          parse_number(source)
+        when /[+-]/
+          source.slice(1) == " " ? parse_atom(source) : parse_number(source)
+        when /[*\/]/
+          parse_atom(source)
+        when /"/
+          parse_string(source)
+        when /[(]/, /[)]/
+          parse_list(source, first_char)
       end
     end
 
@@ -84,28 +80,31 @@ module Emerald
       [string, rest_of_source]
     end
 
-    def parse_list(source)
-      pattern = /\(.*\)/m
-      raise InvalidListError, ERROR_INVALID_LIST unless pattern.match(source)
-      list_range = pattern.match(source).to_s
-      rest_of_source = drop(source, list_range.size)
-      list_contents = list_range[1...(list_range.size - 1)]
-
-      child = parse_input(list_contents, [])
-      list = List.new(*child)
-      [list, rest_of_source]
+    def parse_list(source, char)
+      rest_of_source = source[1..source.size]
+      if /\(/.match(char)
+        [:left_bracket, rest_of_source]
+      elsif /\)/.match(char)
+        [:right_bracket, rest_of_source]
+      end
     end
 
-    def parse_vector(source)
-      pattern = /\[.*\]/m
-      raise InvalidVectorError, ERROR_INVALID_VECTOR unless pattern.match(source)
-      vector_range = pattern.match(source).to_s
-      rest_of_source = drop(source, vector_range.size)
-      vector_contents = vector_range[1...(vector_range.size - 1)]
+    def parse_sexp(source)
+      stack = [[]]
 
-      child = parse_input(vector_contents, [])
-      list = Vector.new(*child)
-      [list, rest_of_source]
+      source.each {|token|
+        case token
+          when :left_bracket
+            stack.push([])
+          when :right_bracket
+            raise InvalidListError, ERROR_INVALID_LIST if stack[-2].nil?
+            stack[-2].push(List.new(*stack.pop))
+          else
+            stack[-1] << token
+        end
+      }
+      raise InvalidListError, ERROR_INVALID_LIST if stack.size > 1
+      stack.first
     end
 
     def drop(source, count)
@@ -114,9 +113,6 @@ module Emerald
     end
 
     class InvalidListError < StandardError
-    end
-
-    class InvalidVectorError < StandardError
     end
   end
 end

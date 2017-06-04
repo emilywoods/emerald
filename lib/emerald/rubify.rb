@@ -127,14 +127,14 @@ module Emerald
     def local_var_assignment(var_list)
       var_list.elements.each_slice(2).map do |var, value|
         raise InvalidVariableAssignment unless var.is_a?(Atom)
-        global_variable([var, value])
+        "#{var.value} = " + serialise_node([value]).first.to_s.strip
       end.join("\n\t")
     end
 
     def global_variable(var_and_values)
       values = var_and_values.slice(1..var_and_values.size)
       raise InvalidVariableAssignment unless var_and_values.first.is_a?(Atom)
-      "#{var_and_values.first.value} = " + serialise_node(values).first.to_s.strip
+      "$#{var_and_values.first.value} = " + serialise_node(values).first.to_s.strip
     end
 
     class InvalidLispFunctionError < StandardError

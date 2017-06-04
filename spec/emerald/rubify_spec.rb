@@ -212,7 +212,7 @@ RSpec.describe Emerald::Rubify do
         Emerald::String.new('"Hello"'))
                                           ]).rubify
 
-      expect(compiled_code).to eq('input = "Hello"')
+      expect(compiled_code).to eq('$input = "Hello"')
     end
 
     it "generates code for global variable assignment of a number" do
@@ -221,7 +221,7 @@ RSpec.describe Emerald::Rubify do
         Emerald::Atom.new("input"),
         Emerald::Number.new(4))]).rubify
 
-      expect(compiled_code).to eq("input = 4")
+      expect(compiled_code).to eq("$input = 4")
     end
 
     it "generates code for global variable assignment of numbers" do
@@ -234,7 +234,7 @@ RSpec.describe Emerald::Rubify do
           Emerald::Number.new(2))
       )]).rubify
 
-      expect(compiled_code).to eq("input = 4 + 2")
+      expect(compiled_code).to eq("$input = 4 + 2")
     end
 
     it "generates code for local variable assignment for x = 4 " do
@@ -249,7 +249,7 @@ RSpec.describe Emerald::Rubify do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
         Emerald::Atom.new("let"),
         Emerald::Vector.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
-                          Emerald::Atom.new("y"), Emerald::Number.new(5)))]).rubify
+                            Emerald::Atom.new("y"), Emerald::Number.new(5)))]).rubify
 
       expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\nend")
     end
@@ -258,7 +258,7 @@ RSpec.describe Emerald::Rubify do
       compiled_code = Emerald::Rubify.new([Emerald::List.new(
         Emerald::Atom.new("let"),
         Emerald::Vector.new(Emerald::Atom.new("x"), Emerald::Number.new(4),
-                          Emerald::Atom.new("y"), Emerald::Number.new(5)),
+                            Emerald::Atom.new("y"), Emerald::Number.new(5)),
         Emerald::List.new(Emerald::Atom.new("+"), Emerald::Atom.new("x"), Emerald::Atom.new("y"))
       )]).rubify
 
