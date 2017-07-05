@@ -26,13 +26,13 @@ RSpec.describe "Compiler" do
     end
 
     it "parses the lisp and returns an assigned local variable" do
-      lisp_file_contents = "(let [x 1 y (+ 3 4)] x)"
+      lisp_file_contents = "(let ((x 1) (y (+ 3 4))) x)"
       compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
       expect(compiled_lisp).to eq("begin\n\tx = 1.0\n\ty = 3.0 + 4.0\n\tx\nend")
     end
 
     it "parses the lisp and returns an assigned local variable with operations" do
-      lisp_file_contents = "(let [x 1 y (+ 3 4)] (- y x))"
+      lisp_file_contents = "(let ((x 1) (y (+ 3 4))) (- y x))"
       compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
       expect(compiled_lisp).to eq("begin\n\tx = 1.0\n\ty = 3.0 + 4.0\n\ty - x\nend")
     end

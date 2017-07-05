@@ -32,20 +32,20 @@ module Emerald
     def parse_node(source)
       first_char = source.slice(0)
       case first_char
-        when " "
-          parse_whitespace(source)
-        when /[a-zA-Z]/
-          parse_atom(source)
-        when /[\d]/
-          parse_number(source)
-        when /[+-]/
-          source.slice(1) == " " ? parse_atom(source) : parse_number(source)
-        when /[*\/]/
-          parse_atom(source)
-        when /"/
-          parse_string(source)
-        when /[(]/, /[)]/
-          parse_list(source, first_char)
+      when " "
+        parse_whitespace(source)
+      when /[a-zA-Z]/
+        parse_atom(source)
+      when /[\d]/
+        parse_number(source)
+      when /[+-]/
+        source.slice(1) == " " ? parse_atom(source) : parse_number(source)
+      when /[*\/]/
+        parse_atom(source)
+      when /"/
+        parse_string(source)
+      when /[(]/, /[)]/
+        parse_list(source, first_char)
       end
     end
 
@@ -82,9 +82,9 @@ module Emerald
 
     def parse_list(source, char)
       rest_of_source = source[1..source.size]
-      if /\(/.match(char)
+      if /\(/ =~ char
         [:left_bracket, rest_of_source]
-      elsif /\)/.match(char)
+      elsif /\)/ =~ char
         [:right_bracket, rest_of_source]
       end
     end
@@ -92,17 +92,17 @@ module Emerald
     def parse_sexp(source)
       stack = [[]]
 
-      source.each {|token|
+      source.each do |token|
         case token
-          when :left_bracket
-            stack.push([])
-          when :right_bracket
-            raise InvalidListError, ERROR_INVALID_LIST if stack[-2].nil?
-            stack[-2].push(List.new(*stack.pop))
-          else
-            stack[-1] << token
+        when :left_bracket
+          stack.push([])
+        when :right_bracket
+          raise InvalidListError, ERROR_INVALID_LIST if stack[-2].nil?
+          stack[-2].push(List.new(*stack.pop))
+        else
+          stack[-1] << token
         end
-      }
+      end
       raise InvalidListError, ERROR_INVALID_LIST if stack.size > 1
       stack.first
     end
