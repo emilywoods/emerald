@@ -126,6 +126,7 @@ module Emerald
 
     def local_var_assignment(var_list)
       var_list.elements.each_slice(2).map do |var, value|
+        puts var
         raise InvalidVariableAssignment unless var.is_a?(Atom)
         "#{var.value} = " + serialise_node([value]).first.to_s.strip
       end.join("\n\t")
