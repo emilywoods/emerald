@@ -90,21 +90,21 @@ module Emerald
     end
 
     def parse_sexp(source)
-      stack = [[]]
+      sexp_stack = [[]]
 
-      source.each do |token|
-        case token
+      source.each do |char|
+        case char
         when :left_bracket
-          stack.push([])
+          sexp_stack.push([])
         when :right_bracket
-          raise InvalidListError, ERROR_INVALID_LIST if stack[-2].nil?
-          stack[-2].push(List.new(*stack.pop))
+          raise InvalidListError, ERROR_INVALID_LIST if sexp_stack[-2].nil?
+          sexp_stack[-2].push(List.new(*sexp_stack.pop))
         else
-          stack[-1] << token
+          sexp_stack[-1] << char
         end
       end
-      raise InvalidListError, ERROR_INVALID_LIST if stack.size > 1
-      stack.first
+      raise InvalidListError, ERROR_INVALID_LIST if sexp_stack.size > 1
+      sexp_stack.first
     end
 
     def drop(source, count)
