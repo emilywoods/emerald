@@ -39,4 +39,5 @@ Security/Eval:
 AllCops:
   Exclude:
     - 'compiled_lisp.rb'
+    - 'vendor/**/*'
 
