@@ -299,22 +299,22 @@ RSpec.describe Emerald::Parser do
                          atom("what")])
     end
   end
-end
 
-private
+  private
 
-def atom(value)
-  Emerald::Atom.new(value)
-end
+  def atom(value)
+    Emerald::Atom.new(value)
+  end
 
-def number(value)
-  Emerald::Number.new(value)
-end
+  def number(value)
+    Emerald::Number.new(value)
+  end
 
-def string(text)
-  Emerald::String.new(text)
-end
+  def string(text)
+    Emerald::String.new(text)
+  end
 
-def list(*elements)
-  Emerald::List.new(*elements)
+  def list(*elements)
+    Emerald::List.new(*elements)
+  end
 end

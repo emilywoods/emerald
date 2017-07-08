@@ -36,3 +36,7 @@ Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: false
 
+AllCops:
+  Exclude:
+    - 'compiled_lisp.rb'
+

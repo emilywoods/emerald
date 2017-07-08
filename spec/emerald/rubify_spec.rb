@@ -268,22 +268,22 @@ RSpec.describe Emerald::Rubify do
       expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\n\tx + y\nend")
     end
   end
-end
 
-private
+  private
 
-def atom(value)
-  Emerald::Atom.new(value)
-end
+  def atom(value)
+    Emerald::Atom.new(value)
+  end
 
-def number(value)
-  Emerald::Number.new(value)
-end
+  def number(value)
+    Emerald::Number.new(value)
+  end
 
-def string(text)
-  Emerald::String.new(text)
-end
+  def string(text)
+    Emerald::String.new(text)
+  end
 
-def list(*elements)
-  Emerald::List.new(*elements)
+  def list(*elements)
+    Emerald::List.new(*elements)
+  end
 end
