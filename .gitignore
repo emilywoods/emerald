@@ -17,5 +17,4 @@ build/
 spec/examples.txt
 
 *.idea
-compiled_lisp.rb
 lib/tempfile
