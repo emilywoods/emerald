@@ -1,5 +1,7 @@
 require_relative "parser"
 require_relative "rubify"
+require_relative "atom_categorisation_helper"
+require_relative "serialisation_helper"
 
 module Emerald
   class Compiler
@@ -11,7 +13,7 @@ module Emerald
 
     def compile
       parsed_lisp = Parser.new(lisp_file_contents).parse
-      Rubify.new(parsed_lisp).rubify
+      Rubify.new(parsed_lisp, SerialisationHelper.new, AtomCategorisationHelper ).rubify
     end
   end
 end
