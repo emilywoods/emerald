@@ -37,4 +37,24 @@ RSpec.describe "Compiler" do
       expect(compiled_lisp).to eq("begin\n\tx = 1.0\n\ty = 3.0 + 4.0\n\ty - x\nend")
     end
   end
+
+  context "when the contents of the file define a function" do
+    it "parses the function and assigns it as a method" do
+      lisp_file_contents = "(defun half () 0.5)"
+      compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
+      expect(compiled_lisp).to eq("def half\n\t0.5\nend")
+    end
+
+    it "parses a function an argument and assigns it as a method" do
+      lisp_file_contents= "(defun half (x) (* x 0.5))"
+      compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
+      expect(compiled_lisp).to eq("def half(x)\n\tx*0.5\nend")
+    end
+
+    it "parses a function arguments and assigns it as a method" do
+      lisp_file_contents= "(defun half (x y) (* x y))"
+      compiled_lisp = Emerald::Compiler.new(lisp_file_contents).compile
+      expect(compiled_lisp).to eq("def half(x,y)\n\tx*y\nend")
+    end
+  end
 end

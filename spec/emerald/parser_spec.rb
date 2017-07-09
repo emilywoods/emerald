@@ -155,7 +155,7 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([list(number(3),
                               number(2),
                               list(
-                                atom("hello")
+                                  atom("hello")
                               ))])
     end
 
@@ -165,12 +165,12 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([list(atom("+"),
                               number(2),
                               list(
-                                atom("+"),
-                                number(3),
-                                list(
-                                  atom("-"),
-                                  number(4)
-                                )
+                                  atom("+"),
+                                  number(3),
+                                  list(
+                                      atom("-"),
+                                      number(4)
+                                  )
                               ))])
     end
 
@@ -179,9 +179,9 @@ RSpec.describe Emerald::Parser do
       ast = Emerald::Parser.new(source).parse
       expect(ast).to eq([list(atom("+"),
                               list(
-                                atom("-"),
-                                number(0),
-                                number(1)
+                                  atom("-"),
+                                  number(0),
+                                  number(1)
                               ),
                               number(2))])
     end
@@ -192,8 +192,8 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([list(atom("+"),
                               number(2),
                               list(
-                                atom("+"),
-                                number(3)
+                                  atom("+"),
+                                  number(3)
                               ),
                               number(3),
                               number(4))])
@@ -205,12 +205,12 @@ RSpec.describe Emerald::Parser do
 
       expect(ast).to eq([list(atom("let"),
                               list(
-                                list(
-                                  atom("x"),
-                                  number(1),
-                                  atom("y"),
-                                  number(2)
-                                )),
+                                  list(
+                                      atom("x"),
+                                      number(1),
+                                      atom("y"),
+                                      number(2)
+                                  )),
                               atom("x"))])
     end
 
@@ -220,29 +220,29 @@ RSpec.describe Emerald::Parser do
 
       expect(ast).to eq([list(atom("let"),
                               list(list(
-                                     atom("x"),
-                                     number(1)
-                              ),
+                                       atom("x"),
+                                       number(1)
+                                   ),
                                    list(
-                                     atom("+"),
-                                     atom("x"),
-                                     number(3)
+                                       atom("+"),
+                                       atom("x"),
+                                       number(3)
                                    ))
-                             )])
+                         )])
     end
 
     it "raises an error for invalid lists missing closing bracket" do
       source = "(+ 2 (+ 3 5)"
-      expect { Emerald::Parser.new(source).parse }.to \
+      expect {Emerald::Parser.new(source).parse}.to \
         raise_error(Emerald::Parser::InvalidListError)
-        .with_message(Emerald::Parser::ERROR_INVALID_LIST)
+                                                                .with_message(Emerald::Parser::ERROR_INVALID_LIST)
     end
 
     it "raises an error for invalid lists missing opening bracket" do
       source = "(+ 2 - 3 5) 2)"
-      expect { Emerald::Parser.new(source).parse }.to \
+      expect {Emerald::Parser.new(source).parse}.to \
         raise_error(Emerald::Parser::InvalidListError)
-        .with_message(Emerald::Parser::ERROR_INVALID_LIST)
+                                                                .with_message(Emerald::Parser::ERROR_INVALID_LIST)
     end
 
     it "parses a paretheses within a string" do
@@ -297,6 +297,17 @@ RSpec.describe Emerald::Parser do
       expect(ast).to eq([number(456),
                          string('"Look at this!"'),
                          atom("what")])
+    end
+  end
+
+  describe "method and function parsing" do
+    it "parses functions definitions" do
+      source = "(defun half () 0.5)"
+      ast = Emerald::Parser.new(source).parse
+      expect(ast).to eq([list(atom('defun'),
+                              atom('half'),
+                              list(),
+                              number(0.5))])
     end
   end
 
