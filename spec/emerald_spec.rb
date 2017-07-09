@@ -103,6 +103,20 @@ RSpec.describe "Emerald" do
       expect(stdout).to eq("Hello")
     end
 
+    it "compiles and evaluates function assignments without arguments" do
+      create_test_file('(defun half () 0.5)')
+      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+      expect(stdout).to eq('half')
+    end
+
+    it "compiles and evaluates function assignments with arguments" do
+      create_test_file('(defun half (x) (* x 0.5))')
+      stdout = `ruby lib/emerald.rb "#{test_file.path}"`.chomp
+      expect(stdout).to eq('half')
+    end
+
+
+
     def create_test_file(file_contents)
       test_file.write(file_contents)
       test_file.close
