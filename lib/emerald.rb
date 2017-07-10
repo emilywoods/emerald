@@ -1,4 +1,4 @@
-require_relative "emerald/user_comms_helper"
+require_relative "emerald/helpers/user_comms_helper"
 require_relative "emerald/compiler"
 
 module Emerald

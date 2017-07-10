@@ -4,8 +4,8 @@ require "emerald/atom"
 require "emerald/string"
 require "emerald/number"
 require "emerald/list"
-require "emerald/atom_categorisation_helper"
-require "emerald/serialisation_helper"
+require "emerald/helpers/atom_categorisation_helper"
+require "emerald/helpers/serialisation_helper"
 
 RSpec.describe Emerald::Rubify do
   let(:stdout) { spy("STDOUT") }
