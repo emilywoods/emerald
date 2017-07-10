@@ -1,5 +1,5 @@
 require "rspec"
-require "emerald/user_comms_helper"
+require "emerald/helpers/user_comms_helper"
 
 RSpec.describe Emerald::UserCommsHelper do
   describe "initialize" do

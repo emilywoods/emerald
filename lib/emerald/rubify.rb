@@ -1,7 +1,3 @@
-require_relative "atom_categorisation_helper"
-require_relative "serialisation_helper"
-
-
 module Emerald
   class Rubify
     def initialize(source, serialisation_helper, atom_categorisation_helper)
@@ -45,11 +41,11 @@ module Emerald
       atom_args = source.slice(1..source.size)
       case atom_functn
       when "num_ops"
-        [numeric_operation(first_node, atom_args), []]
+        [generate_numeric_operation(first_node, atom_args), []]
       when "logical_ops"
-        logical_operation(first_node, atom_args)
+        generate_logical_operation(first_node, atom_args)
       when "variable_assignment"
-        [assign_variable(first_node, atom_args), []]
+        [generate_variable_assignment(first_node, atom_args), []]
       when "function"
         [generate_method(atom_args), []]
       when "variable"
@@ -61,7 +57,7 @@ module Emerald
       @atom_categorisation_helper.type_of_atom(node)
     end
 
-    def numeric_operation(operator, args)
+    def generate_numeric_operation(operator, args)
       args.map.with_index do |item, index|
         if item.is_a?(Number)
           "#{item.number} " + (args[index + 1].nil? ? "" : "#{operator} ")
@@ -71,12 +67,12 @@ module Emerald
       end.join
     end
 
-    def logical_operation(operator, arguments)
+    def generate_logical_operation(operator, arguments)
       arg = serialise_node(arguments)
       ["#{arg.first}.#{operator}", arg.slice(1..arg.size)]
     end
 
-    def assign_variable(variable_type, arguments)
+    def generate_variable_assignment(variable_type, arguments)
       if /(?:def)/ =~ variable_type
         assign_value_to_var(arguments)
       elsif /(?:let)/ =~ variable_type
@@ -115,28 +111,23 @@ module Emerald
     def generate_method(params)
       raise InvalidLispFunctionError unless params.first.is_a?(Atom)
 
-      function_name = params.first.value
-      function_arguments = arg_steps([params[1]], ", ")
-      function_arguments.empty? ? arguments =  "" :  arguments = "(" + function_arguments + ")"
-      function_ops = method_steps(params[2..-1], "\n").to_s
-
-      "def #{function_name}" +
-         arguments +
+      "def #{params.first.value}" +
+          arg_steps([params[1]], ", ") +
           "\n\t" +
-          function_ops +
+          method_steps(params[2..-1], "\n").to_s +
           "end"
     end
 
     def arg_steps(method_operations, concat_with)
-      method_string = ""
+      argument_string = ""
       result = serialise_node(method_operations)
       while result
         node, source = result
-        method_string.concat(node.strip) if (node && !node.empty?)
-        method_string.concat(concat_with) if (!source.empty?)
+        argument_string.concat(node.strip) if node
+        argument_string.concat(concat_with) if (!source.empty?)
         result = serialise_node(source)
       end
-      method_string
+      argument_string.empty? ?   "" :  "(" + argument_string + ")"
     end
 
     def method_steps(method_operations, concat_with)
@@ -144,7 +135,7 @@ module Emerald
       result = serialise_node(method_operations)
       while result
         node, source = result
-        method_string.concat(node.strip + concat_with) if (node && !node.empty?)
+        method_string.concat(node.strip + concat_with) if node
         result = serialise_node(source)
       end
       method_string

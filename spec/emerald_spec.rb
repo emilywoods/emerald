@@ -1,6 +1,6 @@
 require "spec_helper"
 require "tempfile"
-require "emerald/user_comms_helper"
+require "emerald/helpers/user_comms_helper"
 require "emerald/parser"
 require "emerald/compiler"
 
