@@ -34,13 +34,15 @@ module Emerald
       case first_char
       when " "
         parse_whitespace(source)
+      when /\n/
+        parse_newline(source)
       when /[a-zA-Z]/
         parse_atom(source)
       when /[\d]/
         parse_number(source)
       when /[+-]/
         source.slice(1) == " " ? parse_atom(source) : parse_number(source)
-      when /[*\/]/
+      when /[*\/<>%=]/
         parse_atom(source)
       when /"/
         parse_string(source)
@@ -49,15 +51,22 @@ module Emerald
       end
     end
 
+    def parse_newline(source)
+      pattern = /\n/
+      matches = pattern.match(source).to_s
+      rest_of_source = drop(source, matches.to_s.size)
+      [nil, rest_of_source]
+    end
+
     def parse_whitespace(source)
-      pattern = /\A +/
-      matches = pattern.match(source)
+      pattern = /\s+/
+      matches = pattern.match(source).to_s
       rest_of_source = drop(source, matches.to_s.size)
       [nil, rest_of_source]
     end
 
     def parse_atom(source)
-      pattern = /\A[a-zA-Z\d+\-*\/]+/
+      pattern = /\A[a-zA-Z\d+\-*><=%\/]+/
       atom_value = pattern.match(source).to_s
       atom = Atom.new(atom_value)
       rest_of_source = drop(source, atom_value.size)
@@ -81,7 +90,7 @@ module Emerald
     end
 
     def parse_list(source, char)
-      rest_of_source = source[1..source.size]
+      rest_of_source = source[1..-1]
       if /\(/ =~ char
         [:left_bracket, rest_of_source]
       elsif /\)/ =~ char
@@ -91,7 +100,6 @@ module Emerald
 
     def parse_sexp(source)
       sexp_stack = [[]]
-
       source.each do |char|
         case char
         when :left_bracket

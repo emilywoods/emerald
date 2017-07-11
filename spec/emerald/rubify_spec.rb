@@ -4,59 +4,53 @@ require "emerald/atom"
 require "emerald/string"
 require "emerald/number"
 require "emerald/list"
-require "emerald/helpers/atom_categorisation_helper"
-require "emerald/helpers/serialisation_helper"
 
 RSpec.describe Emerald::Rubify do
-  let(:stdout) { spy("STDOUT") }
-  let(:serialisation_helper) { Emerald::SerialisationHelper.new() }
-  let(:atom_characterisation_helper) { Emerald::AtomCategorisationHelper }
-
   it "compiles an empty source" do
-    compiled_code = Emerald::Rubify.new([], serialisation_helper, atom_characterisation_helper).rubify
+    compiled_code = Emerald::Rubify.new([]).rubify
     expect(compiled_code).to eq("")
   end
 
   it "generates code from an empty list" do
-    compiled_code = Emerald::Rubify.new([list], serialisation_helper, atom_characterisation_helper).rubify
+    compiled_code = Emerald::Rubify.new([list]).rubify
     expect(compiled_code).to eq("")
   end
 
   describe "code generation from atoms" do
     it "generates a symbol from a single atom outside of a list" do
-      compiled_code = Emerald::Rubify.new([atom("hello")], serialisation_helper, atom_characterisation_helper).rubify
+      compiled_code = Emerald::Rubify.new([atom("hello")]).rubify
       expect(compiled_code).to eq("hello")
     end
 
     it "generates symbols on separate lines from two atoms outside a list" do
       compiled_code = Emerald::Rubify.new([atom("hello"),
-                                           atom("world")], serialisation_helper, atom_characterisation_helper).rubify
+                                           atom("world")]).rubify
       expect(compiled_code).to eq("hello\nworld")
     end
   end
 
   describe "code generation from numbers" do
     it "generates a number from a single number" do
-      compiled_code = Emerald::Rubify.new([number(5.0)], serialisation_helper, atom_characterisation_helper).rubify
+      compiled_code = Emerald::Rubify.new([number(5.0)]).rubify
       expect(compiled_code).to eq("5.0")
     end
 
     it "generates two numbers on separate lines from numbers outside a list" do
       compiled_code = Emerald::Rubify.new([number(1.0),
-                                           number(3.0)], serialisation_helper, atom_characterisation_helper).rubify
+                                           number(3.0)]).rubify
       expect(compiled_code).to eq("1.0\n3.0")
     end
   end
 
   describe "code generation from strings" do
     it "generates a string from a single string" do
-      compiled_code = Emerald::Rubify.new([string('"Hey there"')], serialisation_helper, atom_characterisation_helper).rubify
+      compiled_code = Emerald::Rubify.new([string('"Hey there"')]).rubify
       expect(compiled_code).to eq('"Hey there"')
     end
 
     it "generates two strings on separate lines from strings outside a list" do
       compiled_code = Emerald::Rubify.new([string('"goat"'),
-                                           string('"duck"')], serialisation_helper, atom_characterisation_helper).rubify
+                                           string('"duck"')]).rubify
       expect(compiled_code).to eq('"goat"' "\n" '"duck"')
     end
   end
@@ -69,7 +63,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 + 2.0")
     end
 
@@ -82,7 +76,7 @@ RSpec.describe Emerald::Rubify do
                                               number(9),
                                               number(0.5)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 + 2.0 + 9 + 0.5")
     end
 
@@ -93,7 +87,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 - 2.0")
     end
 
@@ -104,7 +98,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 / 2.0")
     end
 
@@ -115,7 +109,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 * 2.0")
     end
 
@@ -126,7 +120,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 < 2.0")
     end
 
@@ -137,7 +131,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 > 2.0")
     end
 
@@ -148,7 +142,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 <= 2.0")
     end
 
@@ -159,7 +153,7 @@ RSpec.describe Emerald::Rubify do
                                               number(1.0),
                                               number(2.0)
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq("1.0 >= 2.0")
     end
   end
@@ -167,14 +161,15 @@ RSpec.describe Emerald::Rubify do
   describe "logical operations" do
     it "generates a symbol and a number on separate lines when querying nil outside a list" do
       compiled_code = Emerald::Rubify.new([atom("nil?"),
-                                           number(1.0)], serialisation_helper, atom_characterisation_helper).rubify
+                                           number(1.0)]).rubify
       expect(compiled_code).to eq("nil?\n1.0")
     end
 
     it "generates code for querying nil on a number: (nil? 1.0)" do
       compiled_code = Emerald::Rubify.new(
         [list(atom("nil?"),
-              number(1.0))], serialisation_helper, atom_characterisation_helper).rubify
+              number(1.0))]
+      ).rubify
       expect(compiled_code).to eq("1.0.nil?")
     end
 
@@ -184,7 +179,7 @@ RSpec.describe Emerald::Rubify do
                                               atom("nil?"),
                                               string('"i like"')
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq('"i like".nil?')
     end
 
@@ -194,7 +189,7 @@ RSpec.describe Emerald::Rubify do
                                               atom("empty?"),
                                               string('"bumblebee"')
                                             )
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
       expect(compiled_code).to eq('"bumblebee".empty?')
     end
 
@@ -202,7 +197,7 @@ RSpec.describe Emerald::Rubify do
       expect do
         Emerald::Rubify.new([
                               list(string('"bee"'))
-                            ], serialisation_helper, atom_characterisation_helper).rubify
+                            ]).rubify
       end.to raise_error(Emerald::Rubify::InvalidLispFunctionError)
     end
   end
@@ -213,7 +208,7 @@ RSpec.describe Emerald::Rubify do
         atom("def"),
         atom("input"),
         string('"Hello"'))
-                                          ], serialisation_helper, atom_characterisation_helper).rubify
+                                          ]).rubify
 
       expect(compiled_code).to eq('input = "Hello"')
     end
@@ -222,7 +217,7 @@ RSpec.describe Emerald::Rubify do
       compiled_code = Emerald::Rubify.new([list(
         atom("def"),
         atom("input"),
-        number(4))], serialisation_helper, atom_characterisation_helper).rubify
+        number(4))]).rubify
 
       expect(compiled_code).to eq("input = 4")
     end
@@ -235,7 +230,7 @@ RSpec.describe Emerald::Rubify do
           atom("+"),
           number(4),
           number(2))
-      )], serialisation_helper, atom_characterisation_helper).rubify
+      )]).rubify
 
       expect(compiled_code).to eq("input = 4 + 2")
     end
@@ -245,7 +240,7 @@ RSpec.describe Emerald::Rubify do
         atom("let"),
         list(
           list(atom("x"), number(4))
-        ))], serialisation_helper, atom_characterisation_helper).rubify
+        ))]).rubify
 
       expect(compiled_code).to eq("begin\n\tx = 4\nend")
     end
@@ -256,7 +251,7 @@ RSpec.describe Emerald::Rubify do
         list(
           list(atom("x"), number(4)),
           list(atom("y"), number(5)))
-      )], serialisation_helper, atom_characterisation_helper).rubify
+      )]).rubify
 
       expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\nend")
     end
@@ -268,7 +263,7 @@ RSpec.describe Emerald::Rubify do
           list(atom("x"), number(4)),
           list(atom("y"), number(5))),
         list(atom("+"), atom("x"), atom("y"))
-      )], serialisation_helper, atom_characterisation_helper).rubify
+      )]).rubify
 
       expect(compiled_code).to eq("begin\n\tx = 4\n\ty = 5\n\tx + y\nend")
     end
@@ -277,44 +272,41 @@ RSpec.describe Emerald::Rubify do
   describe "function assignment" do
     it "raises an error if the function does not have an atom name" do
       expect do
-        Emerald::Rubify.new([list(atom('defun'),
-                                                list(),
-                                                number(0.5))], serialisation_helper, atom_characterisation_helper).rubify
+        Emerald::Rubify.new([list(atom("defun"),
+                                  list,
+                                  number(0.5))]).rubify
       end.to raise_error(Emerald::Rubify::InvalidLispFunctionError)
     end
 
-
     it "generates code for a function" do
-      compiled_code = Emerald::Rubify.new([list(atom('defun'),
-                                                atom('half'),
-                                                list(),
-                                                number(0.5))], serialisation_helper, atom_characterisation_helper).rubify
+      compiled_code = Emerald::Rubify.new([list(atom("defun"),
+                                                atom("half"),
+                                                list,
+                                                number(0.5))]).rubify
 
       expect(compiled_code).to eq("def half\n\t0.5\nend")
     end
 
     it "generates code for a function with an argument" do
-      compiled_code = Emerald::Rubify.new([list(atom('defun'),
-                                                atom('half'),
-                                                list(atom('x')),
-                                                list(atom('*'),
-                                                atom('x'),
-                                                number(0.5)))], serialisation_helper, atom_characterisation_helper).rubify
+      compiled_code = Emerald::Rubify.new([list(atom("defun"),
+                                                atom("half"),
+                                                list(atom("x")),
+                                                list(atom("*"),
+                                                     atom("x"),
+                                                     number(0.5)))]).rubify
 
       expect(compiled_code).to eq("def half(x)\n\tx * 0.5\nend")
-
     end
 
     it "generates code for a function with multiple arguments" do
-      compiled_code = Emerald::Rubify.new([list(atom('defun'),
-                                                atom('half'),
-                                                list(atom('x'), atom('y')),
-                                                list(atom('*'),
-                                                     atom('x'),
-                                                     atom('y')))], serialisation_helper, atom_characterisation_helper).rubify
+      compiled_code = Emerald::Rubify.new([list(atom("defun"),
+                                                atom("half"),
+                                                list(atom("x"), atom("y")),
+                                                list(atom("*"),
+                                                     atom("x"),
+                                                     atom("y")))]).rubify
 
       expect(compiled_code).to eq("def half(x, y)\n\tx * y\nend")
-
     end
   end
 

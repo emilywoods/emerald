@@ -1,5 +1,5 @@
 (defun print_first
-  [& arguments]
+  (& arguments)
   (print (first arguments)))
 
 ; compiles to:
