@@ -1,9 +1,7 @@
 module Emerald
   class Rubify
-    def initialize(source, serialisation_helper, atom_categorisation_helper)
+    def initialize(source)
       @source = source
-      @serialisation_helper = serialisation_helper
-      @atom_categorisation_helper = atom_categorisation_helper
     end
 
     def rubify
@@ -26,13 +24,35 @@ module Emerald
     def serialise_node(source)
       first_node = source.first
       case first_node
-      when Atom, Number, String
-        @serialisation_helper.serialise(source)
+      when Atom
+        serialise_atom_outside_list(source)
+      when Number
+        serialise_number(source)
+      when String
+        serialise_string(source)
       when List
         list_items = first_node.elements
         return ["", source[1..-1]] if list_items.empty?
         list_items.first.is_a?(Atom) ? serialise_atom(list_items) : (raise InvalidLispFunctionError)
       end
+    end
+
+    def serialise_atom_outside_list(source)
+      first_node = source.first.value
+      atom_args = source.slice(1..source.size)
+      [first_node, atom_args]
+    end
+
+    def serialise_number(source)
+      first_node = source.first.number
+      rest_of_source = source.slice(1..source.size)
+      [first_node.to_s, rest_of_source]
+    end
+
+    def serialise_string(source)
+      first_node = source.first.string
+      rest_of_source = source.slice(1..source.size)
+      [first_node.to_s, rest_of_source]
     end
 
     def serialise_atom(source)
@@ -54,7 +74,14 @@ module Emerald
     end
 
     def type_of_atom(node)
-      @atom_categorisation_helper.type_of_atom(node)
+      atom_types = {
+        /^[-+*\/<>=]+$/ => "num_ops",
+        /(?:empty\?)|(?:nil\?)/ => "logical_ops",
+        /(?:defun)/ => "function",
+        /(?:let)|(?:def)/ => "variable_assignment",
+        /[\w]/ => "variable"
+      }
+      atom_types.map { |key, val| val if key.match(node) }.compact
     end
 
     def generate_numeric_operation(operator, args)
@@ -112,10 +139,10 @@ module Emerald
       raise InvalidLispFunctionError unless params.first.is_a?(Atom)
 
       "def #{params.first.value}" +
-          arg_steps([params[1]], ", ") +
-          "\n\t" +
-          method_steps(params[2..-1], "\n").to_s +
-          "end"
+        arg_steps([params[1]], ", ") +
+        "\n\t" +
+        method_steps(params[2..-1], "\n").to_s +
+        "end"
     end
 
     def arg_steps(method_operations, concat_with)
@@ -124,10 +151,10 @@ module Emerald
       while result
         node, source = result
         argument_string.concat(node.strip) if node
-        argument_string.concat(concat_with) if (!source.empty?)
+        argument_string.concat(concat_with) unless source.empty?
         result = serialise_node(source)
       end
-      argument_string.empty? ?   "" :  "(" + argument_string + ")"
+      argument_string.empty? ? "" : "(" + argument_string + ")"
     end
 
     def method_steps(method_operations, concat_with)
