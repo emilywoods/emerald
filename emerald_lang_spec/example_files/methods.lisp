@@ -1,5 +1,3 @@
-; This is a comment
-
 (defun puts-twice (thing)
   (puts thing)
   (puts thing))
@@ -21,7 +19,7 @@
 ;
 ; It would compile to this Ruby code
 ;
-; def print_twice(thing)
-;   puts(thing)
-;   puts(thing)
+; def puts_twice(thing)
+;   puts thing
+;   puts thing
 ; end
