@@ -53,40 +53,35 @@ module Emerald
 
     def parse_newline(source)
       pattern = /\n/
-      matches = pattern.match(source).to_s
-      rest_of_source = drop(source, matches.to_s.size)
-      [nil, rest_of_source]
+      newline_to_string = pattern.match(source).to_s
+      return_parsed_node_and_rest_of_source(source, nil, newline_to_string)
     end
 
     def parse_whitespace(source)
       pattern = /\s+/
-      matches = pattern.match(source).to_s
-      rest_of_source = drop(source, matches.to_s.size)
-      [nil, rest_of_source]
+      whitespace_to_string = pattern.match(source).to_s
+      return_parsed_node_and_rest_of_source(source, nil, whitespace_to_string)
     end
 
     def parse_atom(source)
       pattern = /\A[a-zA-Z\d+\-*><=%\/]+/
-      atom_value = pattern.match(source).to_s
-      atom = Atom.new(atom_value)
-      rest_of_source = drop(source, atom_value.size)
-      [atom, rest_of_source]
+      atom_to_string = pattern.match(source).to_s
+      atom = Atom.new(atom_to_string)
+      return_parsed_node_and_rest_of_source(source, atom, atom_to_string)
     end
 
     def parse_number(source)
       pattern = /[+-]?[\d]*\.?[\d]+/
-      number_value = pattern.match(source).to_s
-      number = Number.new(number_value.to_f)
-      rest_of_source = drop(source, number_value.size)
-      [number, rest_of_source]
+      number_to_string = pattern.match(source).to_s
+      number = Number.new(number_to_string.to_f)
+      return_parsed_node_and_rest_of_source(source, number, number_to_string)
     end
 
     def parse_string(source)
       pattern = /"([^"\\]|\\.)*"/
       string_range = pattern.match(source).to_s
       string = String.new(string_range)
-      rest_of_source = drop(source, string_range.size)
-      [string, rest_of_source]
+      return_parsed_node_and_rest_of_source(source, string, string_range)
     end
 
     def parse_list(source, char)
@@ -115,9 +110,10 @@ module Emerald
       sexp_stack.first
     end
 
-    def drop(source, count)
-      range = count..(source.size)
-      source.slice(range)
+    def return_parsed_node_and_rest_of_source(source, parsed_node, string_range_of_node)
+      source_minus_node = string_range_of_node.size..(source.size)
+      rest_of_source = source.slice(source_minus_node)
+      [parsed_node, rest_of_source]
     end
 
     class InvalidListError < StandardError
