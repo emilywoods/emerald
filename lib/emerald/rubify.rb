@@ -25,7 +25,7 @@ module Emerald
       first_node = source.first
       case first_node
       when Atom
-        serialise_atom_outside_list(source)
+        serialise_atom_as_symbol(source)
       when Number
         serialise_number(source)
       when String
@@ -37,7 +37,7 @@ module Emerald
       end
     end
 
-    def serialise_atom_outside_list(source)
+    def serialise_atom_as_symbol(source)
       first_node = source.first.value
       atom_args = source.slice(1..source.size)
       [first_node, atom_args]
