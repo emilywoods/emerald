@@ -36,14 +36,12 @@ module Emerald
         parse_whitespace(source)
       when /\n/
         parse_newline(source)
-      when /[a-zA-Z]/
+      when /[a-zA-Z*\/<>%=]/
         parse_atom(source)
       when /[\d]/
         parse_number(source)
       when /[+-]/
         source.slice(1) == " " ? parse_atom(source) : parse_number(source)
-      when /[*\/<>%=]/
-        parse_atom(source)
       when /"/
         parse_string(source)
       when /[(]/, /[)]/
