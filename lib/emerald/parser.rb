@@ -26,6 +26,7 @@ module Emerald
         ast.push(node) if node
         result = parse_node(source)
       end
+      verify_balanced_list(ast)
       parse_sexp(ast)
     end
 
@@ -45,7 +46,7 @@ module Emerald
       when /"/
         parse_string(source)
       when /[(]/, /[)]/
-        parse_list(source, first_char)
+        replace_parens_with_symbol(source, first_char)
       end
     end
 
@@ -82,7 +83,7 @@ module Emerald
       return_parsed_node_and_rest_of_source(source, string, string_range)
     end
 
-    def parse_list(source, char)
+    def replace_parens_with_symbol(source, char)
       rest_of_source = source[1..-1]
       if /\(/ =~ char
         [:left_bracket, rest_of_source]
@@ -91,21 +92,45 @@ module Emerald
       end
     end
 
-    def parse_sexp(source)
-      sexp_stack = [[]]
-      source.each do |char|
-        case char
+    def verify_balanced_list(array_of_tokens)
+      counter = 0
+      array_of_tokens.each do |token|
+        case token
         when :left_bracket
-          sexp_stack.push([])
+          counter += 1
         when :right_bracket
-          raise InvalidListError, ERROR_INVALID_LIST if sexp_stack[-2].nil?
-          sexp_stack[-2].push(List.new(*sexp_stack.pop))
+          counter -= 1
         else
-          sexp_stack[-1] << char
+          next
         end
       end
-      raise InvalidListError, ERROR_INVALID_LIST if sexp_stack.size > 1
-      sexp_stack.first
+      raise InvalidListError, ERROR_INVALID_LIST unless counter == 0
+    end
+
+    def parse_sexp(array_of_tokens)
+      _, elements = get_nested_struct_recursive(0, array_of_tokens)
+      elements
+    end
+
+    def get_nested_struct_recursive(current_index, array_of_tokens)
+      elements_at_my_level = []
+      index = current_index
+
+      until index == array_of_tokens.size
+        token = array_of_tokens[index]
+
+        case token
+        when :left_bracket
+          index, element = get_nested_struct_recursive(index + 1, array_of_tokens)
+          elements_at_my_level.push(element)
+        when :right_bracket
+          return index + 1, List.new(*elements_at_my_level)
+        else
+          elements_at_my_level.push(token)
+          index += 1
+        end
+      end
+      [index, elements_at_my_level]
     end
 
     def return_parsed_node_and_rest_of_source(source, parsed_node, string_range_of_node)
